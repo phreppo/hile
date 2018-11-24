@@ -2,6 +2,7 @@ module Evaluator
     (   Entry,
         State,
         eval,
+        interpret,
         e,
         example_state)
 where
@@ -13,11 +14,12 @@ import ParseWhile
 -------------------------------------------------------------------------------
 
 type Entry = (String, Integer)
--- Def = "Defined"
 data State = Def [Entry] | Undef
            deriving (Show)
 
-e program = ((eval . parseString) program) example_state
+interpret program = ((eval . parseString) program) example_state
+
+e = interpret
 
 example_state = Def [("x",3),("y",1)]
 
@@ -55,7 +57,7 @@ add_entry_to_state entry (Def entries) = (Def (entry:entries))
 assign_entry_in_state :: Entry -> State -> State
 assign_entry_in_state (identifier,value) (Def entries) =
     Def [ update_entry entry | entry <- entries]
-    where update_entry = \(id,v) -> if id == identifier then (identifier,value) else (id,v)
+    where update_entry (id,v) = if id == identifier then (identifier,value) else (id,v)
 
 eval_aexpr :: AExpr -> State -> Integer
 eval_aexpr (IntConst n)     state = n 

@@ -56,12 +56,13 @@ data AArithemticBinOperator = Add
 -------------------------------------------------------------------------------
 
 languageDef =
-    emptyDef { Token.commentStart    = "/*"
+    emptyDef {    Token.commentStart    = "/*"
                 , Token.commentEnd      = "*/"
                 , Token.commentLine     = "//"
                 , Token.identStart      = letter
                 , Token.identLetter     = alphaNum
-                , Token.reservedNames   = [ "if"
+                , Token.reservedNames   = 
+                                        [ "if"
                                         , "then"
                                         , "else"
                                         , "while"
@@ -72,7 +73,8 @@ languageDef =
                                         , "not"
                                         , "and"
                                         ]
-                , Token.reservedOpNames = ["+", "-", "*", ":="
+                , Token.reservedOpNames = 
+                                        [ "+", "-", "*", ":="
                                         , "<=", "=","and", "or", "not"
                                         ]
                 }
@@ -144,13 +146,13 @@ aExpression = buildExpressionParser aOperators aTerm
 bExpression :: Parser BExpr
 bExpression = buildExpressionParser bOperators bTerm
 
-aOperators = [ [Prefix (reservedOp "-"   >> return (Neg             ))          ]
-                , [Infix  (reservedOp "*"   >> return (ABinary Multiply)) AssocLeft]
-                , [Infix  (reservedOp "+"   >> return (ABinary Add     )) AssocLeft,
+aOperators = [ [Prefix (reservedOp "-"   >> return (Neg             ))          ],
+               [Infix  (reservedOp "*"   >> return (ABinary Multiply)) AssocLeft],
+               [Infix  (reservedOp "+"   >> return (ABinary Add     )) AssocLeft,
                 Infix  (reservedOp "-"   >> return (ABinary Subtract)) AssocLeft]
                 ]
-bOperators = [ [Prefix (reservedOp "not" >> return (Not                   ))          ]
-                , [Infix  (reservedOp "and" >> return (BooleanBinary And     )) AssocLeft]
+bOperators = [ [Prefix (reservedOp "not" >> return (Not                   ))          ],
+               [Infix  (reservedOp "and" >> return (BooleanBinary And     )) AssocLeft]
                 ]
 
 aTerm =  parens aExpression
