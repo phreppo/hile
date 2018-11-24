@@ -1,6 +1,6 @@
 module ParseWhile 
-    (   parseString, 
-        parse1, 
+    (   parseStringWithList, 
+        parseString, 
         Stmt (..), 
         BExpr (..), 
         BBooleanBinOperator (..), 
@@ -21,8 +21,8 @@ import qualified Text.ParserCombinators.Parsec.Token as Token
 --                          PARSE TREE DATA STRUCTURE 
 -------------------------------------------------------------------------------
 
-data Stmt =   Seq [Stmt]
-            | Comp Stmt Stmt
+data Stmt =   Composition [Stmt]
+            | Seq Stmt Stmt
             | Assign String AExpr
             | If BExpr Stmt Stmt
             | While BExpr Stmt
@@ -106,7 +106,7 @@ sequenceOfStmt =
     do 
         list <- (sepBy1 statement' semi)
         -- If there's only one statement return it without using Seq.
-        return $ if length list == 1 then head list else Seq list
+        return $ if length list == 1 then head list else Composition list
 
 statement' :: Parser Stmt
 statement' =  ifStmt
@@ -179,17 +179,17 @@ relation =  (reservedOp "<=" >> return LessEq)
 --                           PARSE INPUT FUNCTIONS
 -------------------------------------------------------------------------------
 
-parseString :: String -> Stmt
-parseString str =
+parseStringWithList :: String -> Stmt
+parseStringWithList str =
     case parse whileParser "" str of
     Left e  -> error $ show e
     Right r -> r
 
 removeList :: Stmt -> Stmt
-removeList (Seq seqList) =
+removeList (Composition seqList) =
     if length seqList == 1
-        then head seqList
-        else Comp (head seqList) (removeList $ Seq (tail seqList))
+        then removeList $ head seqList
+        else Seq (head seqList) (removeList $ Composition (tail seqList))
 
 removeList (Assign identifier aexpr) = 
     Assign identifier aexpr
@@ -200,7 +200,7 @@ removeList (While bexpr body) =
 removeList Skip =
     Skip
 
-parse1 = (removeList . parseString)
+parseString = (removeList . parseStringWithList)
 
 -- parseFile :: String -> IO Stmt
 -- parseFile file =

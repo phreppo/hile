@@ -34,9 +34,8 @@ eval (Assign identifier aexpr) state
 
 eval Skip state = id state
 
-eval (Seq []) state = state
-eval (Seq (first_statement:other_statements)) state = 
-    (eval (Seq other_statements)) $ (eval first_statement state)
+eval (Seq first_statement other_statements) state = 
+    eval other_statements $ (eval first_statement state)
 
 eval (If condition then_stmt else_stmt) state =
     cond condition then_stmt else_stmt state

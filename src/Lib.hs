@@ -9,4 +9,4 @@ import Evaluator
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
 
-pt1 = parseString "x:=1"
+pt1 = parseStringWithList "x:=1"
