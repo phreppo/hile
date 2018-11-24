@@ -1,9 +1,25 @@
 module Lib
-    ( someFunc,
-    ) where
+    (printEvalLoop) where
 
 import ParseWhile
 import Evaluator
+import Utility
 
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+printEvalLoop = 
+    printEvalLoopRec (Def [])
+
+printEvalLoopRec state = 
+    do 
+        putStr "> "
+        program <- getLine
+        if program == "exit"
+            then return ()
+            else
+                evalAndLoop program state
+
+evalAndLoop program state = 
+    do
+        putStrLn ""
+        putStrLn $ show (interpret program state)
+        putStrLn ""
+        printEvalLoopRec (interpret program state)

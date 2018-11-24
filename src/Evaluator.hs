@@ -1,10 +1,9 @@
 module Evaluator
-    (   Entry,
-        State,
+    (   Entry(..),
+        State(..),
         eval,
         interpret,
-        e,
-        example_state)
+        )
 where
 
 import ParseWhile
@@ -17,11 +16,7 @@ type Entry = (String, Integer)
 data State = Def [Entry] | Undef
            deriving (Show)
 
-interpret program = ((eval . parseString) program) example_state
-
-e = interpret
-
-example_state = Def [("x",3),("y",1)]
+interpret program = ((eval . parseString) program)
 
 eval :: Stmt -> State -> State
 
