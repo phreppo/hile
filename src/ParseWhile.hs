@@ -1,13 +1,17 @@
 module ParseWhile 
-    (   parseStringWithList, 
-        parseString, 
-        Stmt (..), 
-        BExpr (..), 
-        BBooleanBinOperator (..), 
-        BArithmeticBinOperator (..), 
-        AExpr (..), 
-        AArithemticBinOperator (..), 
-     )
+    ( parseString, 
+      Stmt (
+        Seq, 
+        Assign, 
+        If, 
+        While, 
+        Skip), 
+      BExpr (..), 
+      BBooleanBinOperator (..), 
+      BArithmeticBinOperator (..), 
+      AExpr (..), 
+      AArithemticBinOperator (..), 
+    )
 where
 
 import System.IO
@@ -21,19 +25,19 @@ import qualified Text.ParserCombinators.Parsec.Token as Token
 --                          PARSE TREE DATA STRUCTURE 
 -------------------------------------------------------------------------------
 
-data Stmt =   Composition [Stmt]
-            | Seq Stmt Stmt
-            | Assign String AExpr
-            | If BExpr Stmt Stmt
-            | While BExpr Stmt
-            | Skip
-            deriving (Show)
+data Stmt = Composition [Stmt]
+          | Seq Stmt Stmt
+          | Assign String AExpr
+          | If BExpr Stmt Stmt
+          | While BExpr Stmt
+          | Skip
+          deriving (Show)
 
 data BExpr = BoolConst Bool
-            | Not BExpr
-            | BooleanBinary    BBooleanBinOperator    BExpr BExpr
-            | ArithmeticBinary BArithmeticBinOperator AExpr AExpr
-            deriving (Show)
+           | Not BExpr
+           | BooleanBinary    BBooleanBinOperator    BExpr BExpr
+           | ArithmeticBinary BArithmeticBinOperator AExpr AExpr
+           deriving (Show)
 
 data BBooleanBinOperator = And 
             deriving (Show)
@@ -43,10 +47,10 @@ data BArithmeticBinOperator = LessEq
                             deriving (Show)
 
 data AExpr = Var      String
-            | IntConst Integer
-            | Neg      AExpr
-            | ABinary  AArithemticBinOperator AExpr AExpr
-            deriving (Show)
+           | IntConst Integer
+           | Neg      AExpr
+           | ABinary  AArithemticBinOperator AExpr AExpr
+           deriving (Show)
 
 data AArithemticBinOperator = Add
                             | Subtract
@@ -105,7 +109,6 @@ statement =  parens statement
 sequenceOfStmt =
     do 
         list <- (sepBy1 statement' semi)
-        -- If there's only one statement return it without using Seq.
         return $ if length list == 1 then head list else Composition list
 
 statement' :: Parser Stmt
@@ -186,11 +189,9 @@ parseStringWithList str =
     Right r -> r
 
 removeList :: Stmt -> Stmt
-removeList (Composition seqList) =
-    if length seqList == 1
-        then removeList $ head seqList
-        else Seq (head seqList) (removeList $ Composition (tail seqList))
-
+removeList (Composition seqList) 
+    | length seqList == 1 = removeList $ head seqList
+    | otherwise           = Seq (head seqList) (removeList $ Composition (tail seqList))
 removeList (Assign identifier aexpr) = 
     Assign identifier aexpr
 removeList (If bexpr stmt1 stmt2)    = 
@@ -200,6 +201,7 @@ removeList (While bexpr body) =
 removeList Skip =
     Skip
 
+parseString :: String -> Stmt
 parseString = (removeList . parseStringWithList)
 
 -- parseFile :: String -> IO Stmt
