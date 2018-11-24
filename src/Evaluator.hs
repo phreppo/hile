@@ -16,7 +16,8 @@ type Entry = (String, Integer)
 data State = Def [Entry] | Undef
            deriving (Show)
 
-interpret program = ((eval . parseString) program)
+interpret :: String -> State -> State
+interpret = (eval . parseString)
 
 eval :: Stmt -> State -> State
 
@@ -26,14 +27,14 @@ eval (Assign identifier aexpr) state
     | otherwise = 
         add_entry_to_state (identifier,evaluated_aexpr) state -- new
     where evaluated_aexpr = eval_aexpr aexpr state
-
+    
 eval Skip state = id state
 
 eval (Seq first_statement other_statements) state = 
     eval other_statements $ (eval first_statement state)
 
 eval (If condition then_stmt else_stmt) state =
-    cond condition then_stmt else_stmt state
+    (cond condition then_stmt else_stmt) state
 
 cond :: BExpr -> Stmt -> Stmt -> State -> State
 cond condition then_stmt else_stmt state
