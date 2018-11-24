@@ -1,5 +1,6 @@
 module ParseWhile 
     (   parseString, 
+        parse1, 
         Stmt (..), 
         BExpr (..), 
         BBooleanBinOperator (..), 
@@ -20,7 +21,8 @@ import qualified Text.ParserCombinators.Parsec.Token as Token
 --                          PARSE TREE DATA STRUCTURE 
 -------------------------------------------------------------------------------
 
-data Stmt = Seq [Stmt]
+data Stmt =   Seq [Stmt]
+            | Comp Stmt Stmt
             | Assign String AExpr
             | If BExpr Stmt Stmt
             | While BExpr Stmt
@@ -182,6 +184,23 @@ parseString str =
     case parse whileParser "" str of
     Left e  -> error $ show e
     Right r -> r
+
+removeList :: Stmt -> Stmt
+removeList (Seq seqList) =
+    if length seqList == 1
+        then head seqList
+        else Comp (head seqList) (removeList $ Seq (tail seqList))
+
+removeList (Assign identifier aexpr) = 
+    Assign identifier aexpr
+removeList (If bexpr stmt1 stmt2)    = 
+    If bexpr (removeList stmt1) (removeList stmt2)
+removeList (While bexpr body) = 
+    While bexpr (removeList body)
+removeList Skip =
+    Skip
+
+parse1 = (removeList . parseString)
 
 -- parseFile :: String -> IO Stmt
 -- parseFile file =
