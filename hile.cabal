@@ -30,6 +30,7 @@ library
       ParseWhile
       Evaluator
       Utility
+      SugarRemover
   other-modules:
       Paths_hile
   hs-source-dirs:

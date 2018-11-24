@@ -7,6 +7,7 @@ module Evaluator
 where
 
 import ParseWhile
+import SugarRemover
 
 -------------------------------------------------------------------------------
 --                           STATE FUNCTIONS
@@ -17,7 +18,7 @@ data State = Def [Entry] | Undef
            deriving (Show)
 
 interpret :: String -> State -> State
-interpret = (eval . parseString)
+interpret = eval . (remove_sugar . parseString)
 
 eval :: Stmt -> State -> State
 
