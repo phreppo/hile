@@ -1,4 +1,4 @@
-module Evaluator
+module Evaluator 
     (   Entry(..),
         State(..),
         eval,
