@@ -15,7 +15,12 @@ import SugarRemover
 
 type Entry = (String, Integer)
 data State = Def [Entry] | Undef
-           deriving (Show)
+           deriving (Show,Read)
+
+-- instance Read State where
+
+
+-- data Stato = Maybe [Entry]
 
 interpret :: String -> State -> State
 interpret = eval . (remove_sugar . parseString)

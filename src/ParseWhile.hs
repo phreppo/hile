@@ -31,31 +31,31 @@ data Stmt = Composition [Stmt]
           | If BExpr Stmt Stmt
           | While BExpr Stmt
           | Skip
-          deriving (Show)
+          deriving (Show,Eq)
 
 data BExpr = BoolConst Bool
            | Not BExpr
            | BooleanBinary    BBooleanBinOperator    BExpr BExpr
            | ArithmeticBinary BArithmeticBinOperator AExpr AExpr
-           deriving (Show)
+           deriving (Show,Eq)
 
 data BBooleanBinOperator = And 
-            deriving (Show)
+            deriving (Show,Eq)
 
 data BArithmeticBinOperator = LessEq 
                             | IsEqual
-                            deriving (Show)
+                            deriving (Show,Eq)
 
 data AExpr = Var      String
            | IntConst Integer
            | Neg      AExpr
            | ABinary  AArithemticBinOperator AExpr AExpr
-           deriving (Show)
+           deriving (Show,Eq)
 
 data AArithemticBinOperator = Add
                             | Subtract
                             | Multiply
-                            deriving (Show)
+                            deriving (Show,Eq)
 
 -------------------------------------------------------------------------------
 --                                 LEXER
