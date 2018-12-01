@@ -9,6 +9,8 @@ import WhileGrammar
 --------------------------------------------------------------------------------
 --  BExpr sugar:
 --      - or
+--      - <
+--      - >
 --  AExpr sugar:
 --          
 --  Stmt sugar:
@@ -42,6 +44,13 @@ remove_bsugar (BooleanBinary And left right) =
     where sugar_free_left = remove_bsugar left
           sugar_free_right = remove_bsugar right
           
+remove_bsugar (ArithmeticBinary Less a1 a2) =
+    BooleanBinary And 
+        (ArithmeticBinary LessEq sugar_free_a1 sugar_free_a2) 
+        (Not (ArithmeticBinary IsEqual sugar_free_a1 sugar_free_a2))
+    where sugar_free_a1 = remove_asugar a1
+          sugar_free_a2 = remove_asugar a2
+
 remove_bsugar (ArithmeticBinary Greater a1 a2) =
     Not (ArithmeticBinary LessEq sugar_free_a1 sugar_free_a2)
     where sugar_free_a1 = remove_asugar a1

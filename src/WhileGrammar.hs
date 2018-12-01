@@ -37,8 +37,9 @@ data BBooleanBinOperator = And
                          deriving (Show,Eq)
 
 data BArithmeticBinOperator = LessEq 
-                            | Greater
                             | IsEqual
+                            | Less
+                            | Greater
                             deriving (Show,Eq)
 
 data AExpr = Var      String

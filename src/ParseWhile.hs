@@ -46,7 +46,7 @@ languageDef =
                                         ]
                 , Token.reservedOpNames = 
                                         [ "+", "-", "*", ":="
-                                        , "<=",">", "=","and", "or", "not"
+                                        , "<=","<",">", "=","and", "or", "not"
                                         ]
                 }
 
@@ -142,6 +142,7 @@ rExpression =
            return $ ArithmeticBinary op a1 a2
 
 relation =  (reservedOp "<=" >> return LessEq)
+        <|> (reservedOp "<" >> return Less)
         <|> (reservedOp ">" >> return Greater)
         <|> (reservedOp "=" >> return IsEqual)
 
