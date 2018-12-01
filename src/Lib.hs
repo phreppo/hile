@@ -1,6 +1,7 @@
 module Lib
     (interpret, 
-     printEvalLoop,get_identifiers_in_stmt
+     printEvalLoop,
+     get_identifiers_in_stmt
     ) 
 where
 
@@ -22,18 +23,31 @@ interpret = eval . remove_sugar . parseString
 -- fill_state s ast = Undef
 
 get_identifiers_in_stmt :: Stmt -> [String]
-get_identifiers_in_stmt (Seq s1 s2) =
-    (get_identifiers_in_stmt s1) ++ (get_identifiers_in_stmt s2)
-get_identifiers_in_stmt (Assign identifier aexpr) =
+get_identifiers_in_stmt stmt =
+    (remove_duplicates . get_identifiers_in_stmt_with_duplicate) stmt
+
+remove_duplicates :: (Eq a) => [a] -> [a]
+remove_duplicates list = rem_dups list []
+
+rem_dups :: (Eq a) => [a] -> [a] -> [a]
+rem_dups [] _ = []
+rem_dups (x:xs) list2
+    | (x `elem` list2) = rem_dups xs list2
+    | otherwise = x : rem_dups xs (x:list2)
+
+get_identifiers_in_stmt_with_duplicate :: Stmt -> [String]
+get_identifiers_in_stmt_with_duplicate (Seq s1 s2) =
+    (get_identifiers_in_stmt_with_duplicate s1) ++ (get_identifiers_in_stmt_with_duplicate s2)
+get_identifiers_in_stmt_with_duplicate (Assign identifier aexpr) =
     [identifier] ++ get_identifiers_in_aexpr aexpr
-get_identifiers_in_stmt (If bexpr then_stmt else_stmt) =
+get_identifiers_in_stmt_with_duplicate (If bexpr then_stmt else_stmt) =
     (get_identifiers_in_bexpr bexpr) ++ 
-    (get_identifiers_in_stmt then_stmt) ++
-    (get_identifiers_in_stmt else_stmt)
-get_identifiers_in_stmt (While bexpr body) = 
+    (get_identifiers_in_stmt_with_duplicate then_stmt) ++
+    (get_identifiers_in_stmt_with_duplicate else_stmt)
+get_identifiers_in_stmt_with_duplicate (While bexpr body) = 
     (get_identifiers_in_bexpr bexpr) ++ 
-    (get_identifiers_in_stmt body)
-get_identifiers_in_stmt (Skip) = []
+    (get_identifiers_in_stmt_with_duplicate body)
+get_identifiers_in_stmt_with_duplicate (Skip) = []
 
 get_identifiers_in_aexpr :: AExpr -> [String] 
 get_identifiers_in_aexpr (Var identifier) = [identifier]
