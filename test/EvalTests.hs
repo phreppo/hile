@@ -24,9 +24,9 @@ tests = [
     wh1
     ]
 
-build_test program state expected_result = 
+build_test program s expected_result = 
     testCase program (assertEqual "" expected_result result)
-    where result = interpret program state
+    where result = interpret program s
 
 assign1 = build_test "x:=1" empty (state [("x",1)])
 

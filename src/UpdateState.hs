@@ -8,12 +8,12 @@ import EvalAExpr
 
 
 update_state :: String -> AExpr -> State -> State
-update_state identifier aexpr state      
-        | identifier_in_state identifier state = 
-            assign_entry_in_state (identifier,evaluated_aexpr) state -- update
+update_state identifier aexpr s      
+        | identifier_in_state identifier s = 
+            assign_entry_in_state (identifier,evaluated_aexpr) s -- update
         | otherwise = 
-            add_entry_to_state (identifier,evaluated_aexpr) state -- new
-        where evaluated_aexpr = eval_aexpr aexpr state
+            add_entry_to_state (identifier,evaluated_aexpr) s -- new
+        where evaluated_aexpr = eval_aexpr aexpr s
 
 identifier_in_state :: String -> State -> Bool
 identifier_in_state identifier (Def [])  = False

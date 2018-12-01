@@ -1,6 +1,8 @@
 module Evaluator 
     (   
         eval,
+        -- TODO: remove these
+        fix,fnth,lub,cond
     )
 where
 
