@@ -22,13 +22,12 @@ eval_aexpr_operator Subtract n1 n2 = n1 - n2
 eval_aexpr_operator Multiply n1 n2 = n1 * n2
 
 assoc_identifier :: String -> State -> Integer
+
 -- problem: we could generate random numbers on the go, but then the function 
 -- would become impure, so the choice is between modify the type of the function
 -- and fill the initial state with random numbers
 
--- TODO: return a random number here
--- assoc_identifier identifier (Def []) = (randomIO :: IO Integer) 
-
+-- PRE: state contains one entry with the identifier "identifier"
 assoc_identifier identifier (Def ((first_identifier,value):entries)) 
     | first_identifier == identifier = value
     | otherwise                      = assoc_identifier identifier (state entries)

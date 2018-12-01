@@ -1,26 +1,52 @@
 module Lib
     (interpret, 
-     printEvalLoop,
-     get_identifiers_in_stmt
+     get_identifiers_in_stmt,
+     get_random_values,
+     get_random_integer,
+     update_entries
     ) 
 where
 
+import System.Random
+import Control.Monad (replicateM)
+    
 import State
 import ParseWhile
 import WhileGrammar
 import Evaluator
 import Utility
 import SugarRemover
+import UpdateState
 
 e program = interpret program example_state
-
 example_state = state [("x",3),("y",1)]
 
-interpret :: String -> State -> State
-interpret = eval . remove_sugar . parseString
+-- interpret :: String -> State -> State
+-- interpret = eval . remove_sugar . parseString
 
--- fill_state :: State -> Stmt -> State
--- fill_state s ast = Undef
+-- initialize_state abstract_syntax_tree = 
+--     state [ (identifier, unsafeLocalState (randomIO :: IO Integer)) | identifier <- (get_identifiers_in_stmt abstract_syntax_tree) ]
+
+-- i :: String -> 
+interpret :: String -> State -> IO State
+interpret source_program s =
+    do
+        values <- get_random_values (length identifiers)
+        return $ ( eval . remove_sugar ) abstract_syntax_tree 
+            (update_entries (state [entry | entry <- zip identifiers values]) s)
+    where abstract_syntax_tree = parseString source_program
+          identifiers = get_identifiers_in_stmt abstract_syntax_tree
+
+update_entries :: State -> State -> State          
+-- takes the first state and overwrites values of the second on it
+update_entries first_state (Def []) = first_state
+update_entries first_state (Def (first_entry:other_entries)) =
+    update_entries (overwrite_entry first_entry first_state) (state other_entries)
+
+get_random_values :: Int -> IO [Integer]
+get_random_values n = replicateM n (get_random_integer)
+
+get_random_integer = randomIO :: IO Integer
 
 get_identifiers_in_stmt :: Stmt -> [String]
 get_identifiers_in_stmt stmt =
@@ -63,23 +89,3 @@ get_identifiers_in_bexpr (BooleanBinary _ bexpr1 bexpr2) =
 get_identifiers_in_bexpr (ArithmeticBinary _ aexpr1 aexpr2) = 
     (get_identifiers_in_aexpr aexpr1) ++ (get_identifiers_in_aexpr aexpr2)
 get_identifiers_in_bexpr _ = [] 
-
-
-printEvalLoop = 
-    printEvalLoopRec (state [])
-
-printEvalLoopRec state = 
-    do 
-        putStr "> "
-        program <- getLine
-        if program == "exit"
-            then return ()
-            else
-                evalAndLoop program state
-
-evalAndLoop program state = 
-    do
-        putStrLn ""
-        putStrLn $ show (interpret program state)
-        putStrLn ""
-        printEvalLoopRec (interpret program state)

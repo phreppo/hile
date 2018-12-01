@@ -25,8 +25,16 @@ tests = [
     ]
 
 build_test program s expected_result = 
-    testCase program (assertEqual "" expected_result result)
+    -- testCase program (assertEqual "" expected_result result)
+    testCase program (compare_impure_states program s expected_result)
     where result = interpret program s
+
+compare_impure_states program s expected_result =
+    do
+        result <- interpret program s
+        assertEqual "" expected_result result
+    -- where result = interpret program s
+
 
 assign1 = build_test "x:=1" empty (state [("x",1)])
 

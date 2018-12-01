@@ -5,4 +5,4 @@ import Evaluator
 import Utility
 
 main :: IO ()
-main = printEvalLoop
+main = return ()
