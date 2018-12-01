@@ -21,11 +21,13 @@ tests = [
     if1,
     if2,
     if4,
-    wh1
+    wh1,
+    wh2,
+    wh3,
+    fact
     ]
 
 build_test program s expected_result = 
-    -- testCase program (assertEqual "" expected_result result)
     testCase program (compare_impure_states program s expected_result)
     where result = interpret program s
 
@@ -33,7 +35,6 @@ compare_impure_states program s expected_result =
     do
         result <- interpret program s
         assertEqual "" expected_result result
-    -- where result = interpret program s
 
 
 assign1 = build_test "x:=1" empty (state [("x",1)])
@@ -52,4 +53,10 @@ if3 = build_test "if true and true then x:=1;y:=1 else x:=0;y:=0" empty (state [
 
 if4 = build_test "if not true then skip;x:=1;y:=1;skip else skip;x:=0;y:=0;skip" empty (state [("y",0),("x",0)])
 
-wh1 = build_test "x:=0; y:=1; while y<=10 do x := x+1; y := y+1 " empty (state [("x",10),("y",11)])
+wh1 = build_test "x:=0; y:=1; while y<=10 do x := x+1; y := y+1" empty (state [("x",10),("y",11)])
+
+wh2 = build_test "while 0 <= x do x := x-1; skip; z := 3" (state [("x",10),("y",1)]) (state [("x",-1),("y",1),("z",3)])
+
+wh3 = build_test "z := 0; while 0 <= x do x := x-1; skip; z := z+3" (state [("x",10),("y",1)]) (state [("x",-1),("y",1),("z",3*11)])
+
+fact = build_test "y:=1; while not (x = 1) do y := y*x; x := x-1" (state [("x",7)]) (state [("x",1),("y",5040)])
