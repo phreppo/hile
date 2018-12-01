@@ -13,13 +13,13 @@ import SugarRemover
 
 e program = interpret program example_state
 
-example_state = Def [("x",3),("y",1)]
+example_state = state [("x",3),("y",1)]
 
 interpret :: String -> State -> State
 interpret = eval . remove_sugar . parseString
 
 printEvalLoop = 
-    printEvalLoopRec (Def [])
+    printEvalLoopRec (state [])
 
 printEvalLoopRec state = 
     do 

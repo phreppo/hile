@@ -26,4 +26,4 @@ assoc_identifier :: String -> State -> Integer
 assoc_identifier identifier (Def []) = 0
 assoc_identifier identifier (Def ((first_identifier,value):entries)) 
     | first_identifier == identifier = value
-    | otherwise                      = assoc_identifier identifier (Def entries)
+    | otherwise                      = assoc_identifier identifier (state entries)

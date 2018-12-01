@@ -1,10 +1,10 @@
 module State
     (Entry,
      State(..),
-     bottom
+     state,
+     bottom,
     )
 where
-
 
 data State = Undef 
            | Def [Entry]
@@ -13,10 +13,12 @@ data State = Undef
 type Entry = (String, Integer)
 
 instance Eq State where
-    -- (Def []) == (Def []) = True
     (Def entries1) == (Def entries2) = 
         entries1 `is_contained` entries2 && entries2 `is_contained` entries1
     _ == _ = False
+
+state :: [Entry] -> State    
+state entries = Def entries 
 
 is_contained :: [Entry] -> [Entry] -> Bool
 is_contained [] _ = True
