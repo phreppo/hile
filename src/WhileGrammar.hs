@@ -33,7 +33,8 @@ data BExpr = BoolConst Bool
            deriving (Show,Eq)
 
 data BBooleanBinOperator = And 
-            deriving (Show,Eq)
+                         | Or
+                         deriving (Show,Eq)
 
 data BArithmeticBinOperator = LessEq 
                             | IsEqual

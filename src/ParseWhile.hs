@@ -122,7 +122,8 @@ aOperators = [ [Prefix (reservedOp "-"   >> return (Neg             ))          
                 Infix  (reservedOp "-"   >> return (ABinary Subtract)) AssocLeft]
                 ]
 bOperators = [ [Prefix (reservedOp "not" >> return (Not                   ))          ],
-               [Infix  (reservedOp "and" >> return (BooleanBinary And     )) AssocLeft]
+               [Infix  (reservedOp "and" >> return (BooleanBinary And     )) AssocLeft ,
+                Infix  (reservedOp "or"  >> return (BooleanBinary Or      )) AssocLeft]
                 ]
 
 aTerm =  parens aExpression

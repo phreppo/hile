@@ -6,7 +6,6 @@ import WhileGrammar
 import State
 import EvalAExpr
 
-
 update_state :: String -> AExpr -> State -> State
 update_state identifier aexpr s =
     update_entry (identifier,evaluated_aexpr) s

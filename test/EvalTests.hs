@@ -24,7 +24,12 @@ tests = [
     wh1,
     wh2,
     wh3,
-    fact
+    fact,
+    or1,
+    or2,
+    or3,
+    or4,
+    or5
     ]
 
 build_test program s expected_result = 
@@ -59,4 +64,31 @@ wh2 = build_test "while 0 <= x do x := x-1; skip; z := 3" (state [("x",10),("y",
 
 wh3 = build_test "z := 0; while 0 <= x do x := x-1; skip; z := z+3" (state [("x",10),("y",1)]) (state [("x",-1),("y",1),("z",3*11)])
 
-fact = build_test "y:=1; while not (x = 1) do y := y*x; x := x-1" (state [("x",7)]) (state [("x",1),("y",5040)])
+fact = build_test "y:=1; while not (x = 1) do y := y*x; x := x-1" 
+        (state [("x",7)]) 
+        (state [("x",1),("y",5040)])
+
+-- f f
+or1 = build_test "if 1=0 or 1=0 then th:=1 else el:=1" 
+        (state [("th",-1),("el",-1)])
+        (state [("th",-1),("el",1)])
+
+-- f t
+or2 = build_test "if false or x=1 then th:=1 else el:=1" 
+    (state [("x",1),("th",-1),("el",-1)])
+    (state [("x",1),("th",1),("el",-1)])
+
+-- t f
+or3 = build_test "if true or false then th:=1 else el:=1" 
+    (state [("th",-1),("el",-1)])
+    (state [("th",1),("el",-1)])
+
+-- t t
+or4 = build_test "if not false or th<=1 then th:=1 else el:=1" 
+    (state [("th",-1),("el",-1)])
+    (state [("th",1),("el",-1)])
+
+-- 
+or5 = build_test "if false or (false or false) or true then th:=1 else el:=1" 
+    (state [("th",-1),("el",-1)])
+    (state [("th",1),("el",-1)])
