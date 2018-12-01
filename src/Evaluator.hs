@@ -17,35 +17,52 @@ type Entry = (String, Integer)
 data State = Def [Entry] | Undef
            deriving (Show,Read)
 
+bottom = Undef
+
 -- instance Read State where
 
 
 -- data Stato = Maybe [Entry]
 
 interpret :: String -> State -> State
-interpret = eval . (remove_sugar . parseString)
+interpret = eval . remove_sugar . parseString
 
 eval :: Stmt -> State -> State
 
-eval (Assign identifier aexpr) state 
-    | identifier_in_state identifier state = 
-        assign_entry_in_state (identifier,evaluated_aexpr) state -- update
-    | otherwise = 
-        add_entry_to_state (identifier,evaluated_aexpr) state -- new
-    where evaluated_aexpr = eval_aexpr aexpr state
+eval (Assign identifier aexpr) = update_state identifier aexpr
     
-eval Skip state = id state
+eval Skip = id
 
-eval (Seq first_statement other_statements) state = 
-    eval other_statements $ (eval first_statement state)
+eval (Seq first_statement other_statements) = (eval other_statements) . (eval first_statement)
 
-eval (If condition then_stmt else_stmt) state =
-    (cond condition then_stmt else_stmt) state
+eval (If condition then_stmt else_stmt) =
+    cond condition then_stmt else_stmt
+
+-- eval (While condition body) = fix f
+--     where f = \g -> cond condition (g . (eval body)) id
+
+-- fix f = lub [ fnth f n bottom | n <- [0..] ] -- Theorem 4.37
+
+-- fnth f 0 = id
+-- fnth f n = f . (fnth f (n-1))
+  
+-- lub (g:gs) s -- Lemma 4.25
+--     | g s /= Undef = g s -- if exist g (and g s) is unique, also g is the least
+--     | otherwise = lub gs s
+  
 
 cond :: BExpr -> Stmt -> Stmt -> State -> State
 cond condition then_stmt else_stmt state
     | eval_bexpr condition state = eval then_stmt state
     | otherwise = eval else_stmt state
+
+update_state :: String -> AExpr -> State -> State
+update_state identifier aexpr state      
+        | identifier_in_state identifier state = 
+            assign_entry_in_state (identifier,evaluated_aexpr) state -- update
+        | otherwise = 
+            add_entry_to_state (identifier,evaluated_aexpr) state -- new
+        where evaluated_aexpr = eval_aexpr aexpr state
 
 identifier_in_state :: String -> State -> Bool
 identifier_in_state identifier (Def [])  = False
