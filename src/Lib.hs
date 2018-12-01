@@ -1,9 +1,5 @@
 module Lib
-    (interpret, 
-     get_identifiers_in_stmt,
-     get_random_values,
-     get_random_integer,
-     update_entries
+    (interpret,
     ) 
 where
 
@@ -21,45 +17,52 @@ import UpdateState
 e program = interpret program example_state
 example_state = state [("x",3),("y",1)]
 
--- interpret :: String -> State -> State
--- interpret = eval . remove_sugar . parseString
+-- Interpretation process
+--      . parse
+--      . remove sugar
+--      . initialize state
+--      . interpret (plain) while program
 
--- initialize_state abstract_syntax_tree = 
---     state [ (identifier, unsafeLocalState (randomIO :: IO Integer)) | identifier <- (get_identifiers_in_stmt abstract_syntax_tree) ]
-
--- i :: String -> 
 interpret :: String -> State -> IO State
-interpret source_program s =
+interpret source_program s = 
+    interpret_parsed (parseString source_program) s
+        
+interpret_parsed :: Stmt -> State -> IO State
+interpret_parsed abstract_syntax_tree s =
+    interpret_sugar_free (remove_sugar abstract_syntax_tree) s
+
+interpret_sugar_free :: Stmt -> State -> IO State
+interpret_sugar_free abstract_syntax_tree s = 
     do
-        values <- get_random_values (length identifiers)
-        return $ ( eval . remove_sugar ) abstract_syntax_tree 
-            (update_entries (state [entry | entry <- zip identifiers values]) s)
-    where abstract_syntax_tree = parseString source_program
-          identifiers = get_identifiers_in_stmt abstract_syntax_tree
+        values <- get_random_integers (length identifiers)
+        interpret_with_initialized_state 
+            abstract_syntax_tree
+            (update_entries (build_state identifiers values) s)
+    where identifiers = get_identifiers_in_stmt abstract_syntax_tree
+
+interpret_with_initialized_state :: Stmt -> State -> IO State 
+interpret_with_initialized_state abstract_syntax_tree s =
+    return $ (eval abstract_syntax_tree) s
+
 
 update_entries :: State -> State -> State          
--- takes the first state and overwrites values of the second on it
+-- takes the first state and overwrites values of the second one on it
 update_entries first_state (Def []) = first_state
 update_entries first_state (Def (first_entry:other_entries)) =
     update_entries (update_entry first_entry first_state) (state other_entries)
 
-get_random_values :: Int -> IO [Integer]
-get_random_values n = replicateM n (get_random_integer)
+build_state :: [String] -> [Integer] -> State
+build_state identifiers values = state [entry | entry <- zip identifiers values]
 
-get_random_integer = randomIO :: IO Integer
+get_random_integers :: Int -> IO [Integer]
+get_random_integers n = replicateM n (get_random_integer)
+
+get_random_integer :: IO Integer
+get_random_integer = randomIO
 
 get_identifiers_in_stmt :: Stmt -> [String]
 get_identifiers_in_stmt stmt =
     (remove_duplicates . get_identifiers_in_stmt_with_duplicate) stmt
-
-remove_duplicates :: (Eq a) => [a] -> [a]
-remove_duplicates list = rem_dups list []
-
-rem_dups :: (Eq a) => [a] -> [a] -> [a]
-rem_dups [] _ = []
-rem_dups (x:xs) list2
-    | (x `elem` list2) = rem_dups xs list2
-    | otherwise = x : rem_dups xs (x:list2)
 
 get_identifiers_in_stmt_with_duplicate :: Stmt -> [String]
 get_identifiers_in_stmt_with_duplicate (Seq s1 s2) =
@@ -89,3 +92,12 @@ get_identifiers_in_bexpr (BooleanBinary _ bexpr1 bexpr2) =
 get_identifiers_in_bexpr (ArithmeticBinary _ aexpr1 aexpr2) = 
     (get_identifiers_in_aexpr aexpr1) ++ (get_identifiers_in_aexpr aexpr2)
 get_identifiers_in_bexpr _ = [] 
+
+remove_duplicates :: (Eq a) => [a] -> [a]
+remove_duplicates list = rem_dups list []
+
+rem_dups :: (Eq a) => [a] -> [a] -> [a]
+rem_dups [] _ = []
+rem_dups (x:xs) list2
+    | (x `elem` list2) = rem_dups xs list2
+    | otherwise = x : rem_dups xs (x:list2)
