@@ -30,5 +30,5 @@ contains []      entry = False
 contains (first_entry:other_entries) entry =
     (first_entry == entry) || (other_entries `contains` entry) 
 
-bottom :: State
-bottom = Undef
+bottom :: State -> State
+bottom = \s -> Undef

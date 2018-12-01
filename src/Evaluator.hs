@@ -27,17 +27,24 @@ eval (Seq s1 s2) =
 eval (If b s1 s2) =
     cond ((eval_bexpr b), (eval s1), (eval s2))
 
--- eval (While condition body) = fix f
---     where f = \g -> cond condition (g . (eval body)) id
+eval (While b s) = fix f
+    where f = \g -> cond (eval_bexpr b, g . eval s, id)
 
--- fix f = lub [ fnth f n bottom | n <- [0..] ] -- Theorem 4.37
+fix :: ((State -> State) -> (State -> State)) -> State -> State
+fix f = lub [ fnth f n bottom | n <- [0..] ] 
 
--- fnth f 0 = id
--- fnth f n = f . (fnth f (n-1))
+fnth :: 
+  ((State -> State) -> (State -> State)) -> 
+  Int -> 
+  (State -> State) ->
+  State -> State
+fnth f 0 = id
+fnth f n = f . (fnth f (n-1))
   
--- lub (g:gs) s -- Lemma 4.25
---     | g s /= Undef = g s -- if exist g (and g s) is unique, also g is the least
---     | otherwise = lub gs s
+lub :: [(State -> State)] -> State -> State
+lub (g:gs) s 
+    | (g s) /= Undef = g s -- if exist g (and g s) is unique, also g is the least
+    | otherwise = lub gs s
   
 cond :: (State -> Bool, State -> State, State -> State) -> State -> State
 cond (p, g1, g2) s

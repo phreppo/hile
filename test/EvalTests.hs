@@ -20,7 +20,8 @@ tests = [
     skip2,
     if1,
     if2,
-    if4
+    if4,
+    wh1
     ]
 
 build_test program state expected_result = 
@@ -42,3 +43,5 @@ if2 = build_test "x:=100; if x<=1 then y:=1 else y:=0" empty (state [("y",0),("x
 if3 = build_test "if true and true then x:=1;y:=1 else x:=0;y:=0" empty (state [("y",1),("x",1)])
 
 if4 = build_test "if not true then skip;x:=1;y:=1;skip else skip;x:=0;y:=0;skip" empty (state [("y",0),("x",0)])
+
+wh1 = build_test "x:=0; y:=1; while y<=10 do x := x+1; y := y+1 " empty (state [("x",10),("y",11)])
