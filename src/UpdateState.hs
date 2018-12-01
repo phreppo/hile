@@ -1,5 +1,5 @@
 module UpdateState
-    (update_state,overwrite_entry)
+    (update_state,update_entry)
 where
 
 import WhileGrammar
@@ -9,11 +9,11 @@ import EvalAExpr
 
 update_state :: String -> AExpr -> State -> State
 update_state identifier aexpr s =
-    overwrite_entry (identifier,evaluated_aexpr) s
+    update_entry (identifier,evaluated_aexpr) s
     where evaluated_aexpr = eval_aexpr aexpr s
 
-overwrite_entry :: Entry -> State -> State
-overwrite_entry (identifier,value) s
+update_entry :: Entry -> State -> State
+update_entry (identifier,value) s
     | identifier_in_state identifier s = 
         assign_entry_in_state (identifier,value) s 
     | otherwise = 

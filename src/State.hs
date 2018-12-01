@@ -3,6 +3,7 @@ module State
      State(..),
      state,
      bottom,
+     empty_state
     )
 where
 
@@ -33,3 +34,6 @@ contains (first_entry:other_entries) entry =
 
 bottom :: State -> State
 bottom = \s -> Undef
+
+empty_state :: State
+empty_state = state []

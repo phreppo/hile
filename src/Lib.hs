@@ -41,7 +41,7 @@ update_entries :: State -> State -> State
 -- takes the first state and overwrites values of the second on it
 update_entries first_state (Def []) = first_state
 update_entries first_state (Def (first_entry:other_entries)) =
-    update_entries (overwrite_entry first_entry first_state) (state other_entries)
+    update_entries (update_entry first_entry first_state) (state other_entries)
 
 get_random_values :: Int -> IO [Integer]
 get_random_values n = replicateM n (get_random_integer)
