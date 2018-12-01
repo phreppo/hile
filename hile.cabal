@@ -30,6 +30,7 @@ library
       State
       ParseWhile
       WhileGrammar
+      UpdateState
       Evaluator
       Utility
       SugarRemover
@@ -42,7 +43,8 @@ library
   build-depends:
       base >=4.7 && <5,
       parsec,
-      HUnit
+      HUnit,
+      random
   default-language: Haskell2010
 
 executable hile-exe

@@ -1,9 +1,7 @@
 module Evaluator 
-    (   Entry(..),
-        State(..),
+    (   
         eval,
-        -- interpret,
-        )
+    )
 where
 
 import State
@@ -11,6 +9,7 @@ import WhileGrammar
 import SugarRemover
 import EvalAExpr
 import EvalBExpr
+import UpdateState
 
 -------------------------------------------------------------------------------
 --                            SEMANTIC FUNCTION
@@ -22,11 +21,11 @@ eval (Assign identifier aexpr) = update_state identifier aexpr
     
 eval Skip = id
 
-eval (Seq first_statement other_statements) = 
-    (eval other_statements) . (eval first_statement)
+eval (Seq s1 s2) = 
+    (eval s2) . (eval s1)
 
-eval (If condition then_stmt else_stmt) =
-    cond ((eval_bexpr condition), (eval then_stmt), (eval else_stmt))
+eval (If b s1 s2) =
+    cond ((eval_bexpr b), (eval s1), (eval s2))
 
 -- eval (While condition body) = fix f
 --     where f = \g -> cond condition (g . (eval body)) id
@@ -44,24 +43,3 @@ cond :: (State -> Bool, State -> State, State -> State) -> State -> State
 cond (p, g1, g2) s
   | p s == True  = g1 s
   | p s == False = g2 s
-
-update_state :: String -> AExpr -> State -> State
-update_state identifier aexpr state      
-        | identifier_in_state identifier state = 
-            assign_entry_in_state (identifier,evaluated_aexpr) state -- update
-        | otherwise = 
-            add_entry_to_state (identifier,evaluated_aexpr) state -- new
-        where evaluated_aexpr = eval_aexpr aexpr state
-
-identifier_in_state :: String -> State -> Bool
-identifier_in_state identifier (Def [])  = False
-identifier_in_state identifier (Def ((first_identifier,first_value):entries)) = 
-    (first_identifier == identifier) || identifier_in_state identifier (Def entries)
-
-add_entry_to_state :: Entry -> State -> State
-add_entry_to_state entry (Def entries) = (Def (entry:entries)) 
-
-assign_entry_in_state :: Entry -> State -> State
-assign_entry_in_state (identifier,value) (Def entries) =
-    Def [ update_entry entry | entry <- entries]
-    where update_entry (id,v) = if id == identifier then (identifier,value) else (id,v)

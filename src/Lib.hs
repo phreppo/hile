@@ -4,6 +4,7 @@ module Lib
     ) 
 where
 
+import State
 import ParseWhile
 import WhileGrammar
 import Evaluator
