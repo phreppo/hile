@@ -5,6 +5,7 @@ import Test.Tasty
 import Test.Tasty.HUnit
 
 import ParseWhile
+import WhileGrammar
 
 
 tests = [numericAssign,genericAssign,skip,seq1,seq2,simpleIf, composedIf,composedIf2,simpleWhile]

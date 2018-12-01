@@ -2,6 +2,7 @@ module Lib
     (printEvalLoop) where
 
 import ParseWhile
+import WhileGrammar
 import Evaluator
 import Utility
 

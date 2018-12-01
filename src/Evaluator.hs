@@ -6,24 +6,16 @@ module Evaluator
         )
 where
 
+import State
 import ParseWhile
+import WhileGrammar
 import SugarRemover
+import EvalAExpr
+import EvalBExpr
 
 -------------------------------------------------------------------------------
 --                           STATE FUNCTIONS
 -------------------------------------------------------------------------------
-
-type Entry = (String, Integer)
-data State = Def [Entry] | Undef
-           deriving (Show,Read)
-
-bottom :: State
-bottom = Undef
-
--- instance Read State where
-
-
--- data Stato = Maybe [Entry]
 
 interpret :: String -> State -> State
 interpret = eval . remove_sugar . parseString
@@ -77,41 +69,3 @@ assign_entry_in_state :: Entry -> State -> State
 assign_entry_in_state (identifier,value) (Def entries) =
     Def [ update_entry entry | entry <- entries]
     where update_entry (id,v) = if id == identifier then (identifier,value) else (id,v)
-
-eval_aexpr :: AExpr -> State -> Integer
-eval_aexpr (IntConst n)     state = n 
-eval_aexpr (Var identifier) state = assoc_identifier identifier state
-eval_aexpr (Neg aexpr)      state = negate $ eval_aexpr aexpr state
-eval_aexpr (ABinary operator aexpr1 aexpr2) state = 
-    eval_aexpr_operator operator first_partial_value second_partial_value
-    where 
-        first_partial_value = eval_aexpr aexpr1 state
-        second_partial_value = eval_aexpr aexpr2 state
-
-assoc_identifier :: String -> State -> Integer
-assoc_identifier identifier (Def ((first_identifier,value):entries)) 
-    | first_identifier == identifier = value
-    | otherwise                      = assoc_identifier identifier (Def entries)
-
-eval_aexpr_operator :: AArithemticBinOperator -> Integer -> Integer -> Integer
-eval_aexpr_operator Add      n1 n2 = n1 + n2
-eval_aexpr_operator Subtract n1 n2 = n1 - n2
-eval_aexpr_operator Multiply n1 n2 = n1 * n2
-
-eval_bexpr :: BExpr -> State -> Bool
-eval_bexpr (BoolConst b)   state = b
-eval_bexpr (Not sub_bexpr) state = not $ eval_bexpr sub_bexpr state
-eval_bexpr (BooleanBinary operator subexpr1 subexpr2) state = 
-    eval_bexpr_boolean_operator operator subexpr1 subexpr2 state
-eval_bexpr (ArithmeticBinary operator subexpr1 subexpr2) state = 
-    eval_bexpr_arithemtic_operator operator subexpr1 subexpr2 state
-
-eval_bexpr_boolean_operator :: BBooleanBinOperator -> BExpr -> BExpr -> State -> Bool
-eval_bexpr_boolean_operator And subexpr1 subexpr2 state =
-    (eval_bexpr subexpr1 state) && (eval_bexpr subexpr2 state) 
-
-eval_bexpr_arithemtic_operator :: BArithmeticBinOperator -> AExpr -> AExpr -> State -> Bool
-eval_bexpr_arithemtic_operator LessEq aexpr1 aexpr2 state =
-    (eval_aexpr aexpr1 state) <= (eval_aexpr aexpr2 state)
-eval_bexpr_arithemtic_operator IsEqual aexpr1 aexpr2 state =
-    (eval_aexpr aexpr1 state) == (eval_aexpr aexpr2 state)

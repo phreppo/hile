@@ -1,4 +1,5 @@
 import ParseWhile
+import WhileGrammar
 
 -- main :: IO ()
 -- main = putStrLn "Test suite not yet implemented"

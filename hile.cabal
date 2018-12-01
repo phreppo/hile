@@ -27,10 +27,14 @@ source-repository head
 library
   exposed-modules:
       Lib
+      State
       ParseWhile
+      WhileGrammar
       Evaluator
       Utility
       SugarRemover
+      EvalAExpr
+      EvalBExpr
   other-modules:
       Paths_hile
   hs-source-dirs:

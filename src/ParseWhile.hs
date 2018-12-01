@@ -1,19 +1,20 @@
 module ParseWhile 
     ( parseString, 
-      Stmt (
-        Seq, 
-        Assign, 
-        If, 
-        While, 
-        Skip), 
-      BExpr (..), 
-      BBooleanBinOperator (..), 
-      BArithmeticBinOperator (..), 
-      AExpr (..), 
-      AArithemticBinOperator (..), 
+    --   Stmt (
+    --     Seq, 
+    --     Assign, 
+    --     If, 
+    --     While, 
+    --     Skip), 
+    --   BExpr (..), 
+    --   BBooleanBinOperator (..), 
+    --   BArithmeticBinOperator (..), 
+    --   AExpr (..), 
+    --   AArithemticBinOperator (..), 
     )
 where
 
+import WhileGrammar
 import System.IO
 import Control.Monad
 import Text.ParserCombinators.Parsec
@@ -21,41 +22,41 @@ import Text.ParserCombinators.Parsec.Expr
 import Text.ParserCombinators.Parsec.Language
 import qualified Text.ParserCombinators.Parsec.Token as Token
 
--------------------------------------------------------------------------------
---                          PARSE TREE DATA STRUCTURE 
--------------------------------------------------------------------------------
+-- -------------------------------------------------------------------------------
+-- --                          PARSE TREE DATA STRUCTURE 
+-- -------------------------------------------------------------------------------
 
-data Stmt = Composition [Stmt]
-          | Seq Stmt Stmt
-          | Assign String AExpr
-          | If BExpr Stmt Stmt
-          | While BExpr Stmt
-          | Skip
-          deriving (Show,Eq)
+-- data Stmt = Composition [Stmt]
+--           | Seq Stmt Stmt
+--           | Assign String AExpr
+--           | If BExpr Stmt Stmt
+--           | While BExpr Stmt
+--           | Skip
+--           deriving (Show,Eq)
 
-data BExpr = BoolConst Bool
-           | Not BExpr
-           | BooleanBinary    BBooleanBinOperator    BExpr BExpr
-           | ArithmeticBinary BArithmeticBinOperator AExpr AExpr
-           deriving (Show,Eq)
+-- data BExpr = BoolConst Bool
+--            | Not BExpr
+--            | BooleanBinary    BBooleanBinOperator    BExpr BExpr
+--            | ArithmeticBinary BArithmeticBinOperator AExpr AExpr
+--            deriving (Show,Eq)
 
-data BBooleanBinOperator = And 
-            deriving (Show,Eq)
+-- data BBooleanBinOperator = And 
+--             deriving (Show,Eq)
 
-data BArithmeticBinOperator = LessEq 
-                            | IsEqual
-                            deriving (Show,Eq)
+-- data BArithmeticBinOperator = LessEq 
+--                             | IsEqual
+--                             deriving (Show,Eq)
 
-data AExpr = Var      String
-           | IntConst Integer
-           | Neg      AExpr
-           | ABinary  AArithemticBinOperator AExpr AExpr
-           deriving (Show,Eq)
+-- data AExpr = Var      String
+--            | IntConst Integer
+--            | Neg      AExpr
+--            | ABinary  AArithemticBinOperator AExpr AExpr
+--            deriving (Show,Eq)
 
-data AArithemticBinOperator = Add
-                            | Subtract
-                            | Multiply
-                            deriving (Show,Eq)
+-- data AArithemticBinOperator = Add
+--                             | Subtract
+--                             | Multiply
+--                             deriving (Show,Eq)
 
 -------------------------------------------------------------------------------
 --                                 LEXER

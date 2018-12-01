@@ -4,7 +4,7 @@ module SugarRemover
     )
 where
 
-import ParseWhile
+import WhileGrammar
 
 -- a < b == (not (a == b)) and (a <= b)
 remove_sugar :: Stmt -> Stmt
