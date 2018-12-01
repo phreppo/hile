@@ -1,10 +1,21 @@
 module Lib
-    (printEvalLoop) where
+    (interpret, 
+     printEvalLoop
+    ) 
+where
 
 import ParseWhile
 import WhileGrammar
 import Evaluator
 import Utility
+import SugarRemover
+
+e program = interpret program example_state
+
+example_state = Def [("x",3),("y",1)]
+
+interpret :: String -> State -> State
+interpret = eval . remove_sugar . parseString
 
 printEvalLoop = 
     printEvalLoopRec (Def [])

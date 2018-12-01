@@ -2,23 +2,19 @@ module Evaluator
     (   Entry(..),
         State(..),
         eval,
-        interpret,
+        -- interpret,
         )
 where
 
 import State
-import ParseWhile
 import WhileGrammar
 import SugarRemover
 import EvalAExpr
 import EvalBExpr
 
 -------------------------------------------------------------------------------
---                           STATE FUNCTIONS
+--                            SEMANTIC FUNCTION
 -------------------------------------------------------------------------------
-
-interpret :: String -> State -> State
-interpret = eval . remove_sugar . parseString
 
 eval :: Stmt -> State -> State
 
