@@ -33,7 +33,9 @@ tests = [
     greater1,
     greater2,
     less1,
-    less2
+    less2,
+    greater_eq1,
+    greater_eq2
     ]
 
 build_test program s expected_result = 
@@ -99,6 +101,14 @@ or5 = build_test "if false or (false or false) or true then th:=1 else el:=1"
 greater1 = build_test "if 1 > 0 then th:=1 else el:=1" 
     (state [("th",-1),("el",-1)])
     (state [("th",1),("el",-1)])
+
+greater_eq1 = build_test "if 1 >= 1 then th:=1 else el:=1" 
+    (state [("th",-1),("el",-1)])
+    (state [("th",1),("el",-1)])
+
+greater_eq2 = build_test "if 3 >= 1+3 then th:=1 else el:=1" 
+    (state [("th",-1),("el",-1)])
+    (state [("th",-1),("el",1)])
 
 greater2 = build_test "if 1 > 1 then th:=1 else el:=1" 
     (state [("th",-1),("el",-1)])

@@ -46,7 +46,7 @@ languageDef =
                                         ]
                 , Token.reservedOpNames = 
                                         [ "+", "-", "*", ":="
-                                        , "<=","<",">", "=","and", "or", "not"
+                                        , "<=","<",">",">=", "=","and", "or", "not"
                                         ]
                 }
 
@@ -144,6 +144,7 @@ rExpression =
 relation =  (reservedOp "<=" >> return LessEq)
         <|> (reservedOp "<" >> return Less)
         <|> (reservedOp ">" >> return Greater)
+        <|> (reservedOp ">=" >> return GreaterEq)
         <|> (reservedOp "=" >> return IsEqual)
 
 -------------------------------------------------------------------------------

@@ -40,6 +40,7 @@ data BArithmeticBinOperator = LessEq
                             | IsEqual
                             | Less
                             | Greater
+                            | GreaterEq
                             deriving (Show,Eq)
 
 data AExpr = Var      String
