@@ -17,6 +17,7 @@ type Entry = (String, Integer)
 data State = Def [Entry] | Undef
            deriving (Show,Read)
 
+bottom :: State
 bottom = Undef
 
 -- instance Read State where
@@ -33,10 +34,11 @@ eval (Assign identifier aexpr) = update_state identifier aexpr
     
 eval Skip = id
 
-eval (Seq first_statement other_statements) = (eval other_statements) . (eval first_statement)
+eval (Seq first_statement other_statements) = 
+    (eval other_statements) . (eval first_statement)
 
 eval (If condition then_stmt else_stmt) =
-    cond condition then_stmt else_stmt
+    cond ((eval_bexpr condition), (eval then_stmt), (eval else_stmt))
 
 -- eval (While condition body) = fix f
 --     where f = \g -> cond condition (g . (eval body)) id
@@ -50,11 +52,10 @@ eval (If condition then_stmt else_stmt) =
 --     | g s /= Undef = g s -- if exist g (and g s) is unique, also g is the least
 --     | otherwise = lub gs s
   
-
-cond :: BExpr -> Stmt -> Stmt -> State -> State
-cond condition then_stmt else_stmt state
-    | eval_bexpr condition state = eval then_stmt state
-    | otherwise = eval else_stmt state
+cond :: (State -> Bool, State -> State, State -> State) -> State -> State
+cond (p, g1, g2) s
+  | p s == True  = g1 s
+  | p s == False = g2 s
 
 update_state :: String -> AExpr -> State -> State
 update_state identifier aexpr state      
