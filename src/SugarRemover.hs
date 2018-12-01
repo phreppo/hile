@@ -6,6 +6,15 @@ where
 
 import WhileGrammar
 
+--------------------------------------------------------------------------------
+--  BExpr sugar:
+--      - or
+--  AExpr sugar:
+--          
+--  Stmt sugar:
+--      
+--------------------------------------------------------------------------------
+
 -- a < b == (not (a == b)) and (a <= b)
 remove_sugar :: Stmt -> Stmt
 remove_sugar (If bexpr stmt1 stmt2) = 
@@ -33,6 +42,11 @@ remove_bsugar (BooleanBinary And left right) =
     where sugar_free_left = remove_bsugar left
           sugar_free_right = remove_bsugar right
           
+remove_bsugar (ArithmeticBinary Greater a1 a2) =
+    Not (ArithmeticBinary LessEq sugar_free_a1 sugar_free_a2)
+    where sugar_free_a1 = remove_asugar a1
+          sugar_free_a2 = remove_asugar a2
+
 remove_bsugar (ArithmeticBinary op a1 a2) =
     ArithmeticBinary op sugar_free_a1 sugar_free_a2
     where sugar_free_a1 = remove_asugar a1
