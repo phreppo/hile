@@ -42,7 +42,7 @@ interpret_sugar_free abstract_syntax_tree s =
 
 interpret_with_initialized_state :: Stmt -> State -> IO State 
 interpret_with_initialized_state abstract_syntax_tree s =
-    return $ (eval abstract_syntax_tree) s
+    return $ (semantics abstract_syntax_tree) s
 
 
 update_entries :: State -> State -> State          

@@ -1,6 +1,6 @@
 module Evaluator 
     (   
-        eval,
+        semantics,
         -- TODO: remove these
         fix,fnth,lub,cond
     )
@@ -17,20 +17,20 @@ import UpdateState
 --                            SEMANTIC FUNCTION
 -------------------------------------------------------------------------------
 
-eval :: Stmt -> State -> State
+semantics :: Stmt -> State -> State
 
-eval (Assign identifier aexpr) = update_state identifier aexpr
+semantics (Assign identifier aexpr) = update_state identifier aexpr
     
-eval Skip = id
+semantics Skip = id
 
-eval (Seq s1 s2) = 
-    (eval s2) . (eval s1)
+semantics (Seq s1 s2) = 
+    (semantics s2) . (semantics s1)
 
-eval (If b s1 s2) =
-    cond ((eval_bexpr b), (eval s1), (eval s2))
+semantics (If b s1 s2) =
+    cond ((eval_bexpr b), (semantics s1), (semantics s2))
 
-eval (While b s) = fix f
-    where f = \g -> cond (eval_bexpr b, g . eval s, id)
+semantics (While b s) = fix f
+    where f = \g -> cond (eval_bexpr b, g . semantics s, id)
 
 fix :: ((State -> State) -> (State -> State)) -> State -> State
 fix f = lub [ fnth f n bottom | n <- [0..] ] 
