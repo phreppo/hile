@@ -6,6 +6,7 @@ module WhileGrammar
     If, 
     While, 
     Repeat, 
+    For, 
     Skip), 
   BExpr (..), 
   BBooleanBinOperator (..), 
@@ -27,6 +28,7 @@ data Stmt = Composition [Stmt]
           | Skip
           -- Sugar
           | Repeat Stmt BExpr
+          | For String AExpr AExpr Stmt
           deriving (Show,Eq)
 
 data BExpr = BoolConst Bool

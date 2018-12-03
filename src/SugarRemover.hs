@@ -13,9 +13,10 @@ import WhileGrammar
 --      - >
 --      - >=
 --  AExpr sugar:
---          
+--          TODO: remove this if thre are not aexpr sugar
 --  Stmt sugar:
---      
+--      - repeat S until b
+--      - for x:=a1 to a2 do S 
 --------------------------------------------------------------------------------
 
 -- a < b == (not (a == b)) and (a <= b)
@@ -34,6 +35,14 @@ remove_sugar (Repeat body bexpr) =
     Seq body 
         (While (Not sugar_free_bexpr) sugar_free_body)
     where sugar_free_bexpr = remove_bsugar bexpr
+          sugar_free_body  = remove_sugar body
+remove_sugar (For identifier initial_value final_value body) =
+    Seq (Assign identifier sugar_free_initial_value)
+        (While 
+            (ArithmeticBinary LessEq (Var identifier) sugar_free_final_value) 
+            (Seq sugar_free_body (Assign identifier (ABinary Add (Var identifier) (IntConst 1)) )))
+    where sugar_free_initial_value = remove_asugar initial_value
+          sugar_free_final_value = remove_asugar final_value
           sugar_free_body = remove_sugar body
         
 

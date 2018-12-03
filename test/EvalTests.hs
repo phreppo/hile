@@ -113,6 +113,20 @@ repeat3 = build_test "repeat x:=3 until true"
     (state [])
     (state [("x",3)])
     
+for1 = build_test "for x:=0 to 9 do skip"
+    (state [])
+    (state [("x",10)])
+    
+    
+for2 = build_test "base := 2; exponent := 3; accumulator := 1; for i:=1 to exponent do accumulator:=accumulator*base"
+    (state [])
+    (state [("base",2),("exponent",3),("accumulator",8),("i",4)])
+
+for3 = build_test "y := 0; for x:=3 to 5 do y:=y+1"
+    (state [])
+    (state [("x",6), ("y",3)])
+    
+
 tests = [
     assign1,
     assign2,
@@ -139,5 +153,8 @@ tests = [
     composition_sugar1,
     repeat1,
     repeat2,
-    repeat3
+    repeat3,
+    for1,
+    for2,
+    for3
     ]

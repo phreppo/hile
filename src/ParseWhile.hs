@@ -45,6 +45,8 @@ languageDef =
                                         , "and"
                                         , "repeat"
                                         , "until"
+                                        , "for"
+                                        , "to"
                                         ]
                 , Token.reservedOpNames = 
                                         [ "+", "-", "*", ":="
@@ -84,6 +86,7 @@ statement' =  ifStmt
             <|> skipStmt
             <|> assignStmt
             <|> repeatStmt
+            <|> forStmt
 
 ifStmt :: Parser Stmt
 ifStmt =
@@ -110,6 +113,18 @@ repeatStmt =
        reserved "until"
        cond <- bExpression
        return $ Repeat stmt cond
+
+forStmt :: Parser Stmt
+forStmt =
+    do reserved "for"
+       var  <- identifier
+       reservedOp ":="
+       startingExpr <- aExpression
+       reserved "to"
+       finalExpr <- aExpression
+       reserved "do"
+       stmt <- statement
+       return $ For var startingExpr finalExpr stmt
 
 assignStmt :: Parser Stmt
 assignStmt =
@@ -180,6 +195,8 @@ removeList (While bexpr body) =
     While bexpr (removeList body)
 removeList (Repeat body bexpr) = 
     Repeat (removeList body) bexpr
+removeList (For identifier startingAExpr finalAExpr body) = 
+    For identifier startingAExpr finalAExpr (removeList body)
 removeList Skip =
     Skip
 
