@@ -20,11 +20,22 @@ import WhileGrammar
 
 -- a < b == (not (a == b)) and (a <= b)
 remove_sugar :: Stmt -> Stmt
+remove_sugar (Seq stmt1 stmt2) = 
+    Seq (remove_sugar stmt1) (remove_sugar stmt2)
+remove_sugar (Assign identifier aexpr) = 
+    Assign identifier (remove_asugar aexpr)
 remove_sugar (If bexpr stmt1 stmt2) = 
     If (remove_bsugar bexpr) (remove_sugar stmt1) (remove_sugar stmt2)
 remove_sugar (While bexpr body) = 
     While (remove_bsugar bexpr) (remove_sugar body)
-remove_sugar expr = expr
+remove_sugar Skip =
+    Skip
+remove_sugar (Repeat body bexpr) =
+    Seq body 
+        (While (Not sugar_free_bexpr) sugar_free_body)
+    where sugar_free_bexpr = remove_bsugar bexpr
+          sugar_free_body = remove_sugar body
+        
 
 remove_bsugar :: BExpr -> BExpr
 

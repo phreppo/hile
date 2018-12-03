@@ -5,6 +5,7 @@ module WhileGrammar
     Assign, 
     If, 
     While, 
+    Repeat, 
     Skip), 
   BExpr (..), 
   BBooleanBinOperator (..), 
@@ -24,6 +25,8 @@ data Stmt = Composition [Stmt]
           | If BExpr Stmt Stmt
           | While BExpr Stmt
           | Skip
+          -- Sugar
+          | Repeat Stmt BExpr
           deriving (Show,Eq)
 
 data BExpr = BoolConst Bool
@@ -33,11 +36,13 @@ data BExpr = BoolConst Bool
            deriving (Show,Eq)
 
 data BBooleanBinOperator = And 
+                         -- Sugar 
                          | Or
                          deriving (Show,Eq)
 
 data BArithmeticBinOperator = LessEq 
                             | IsEqual
+                            -- Sugar
                             | Less
                             | Greater
                             | GreaterEq

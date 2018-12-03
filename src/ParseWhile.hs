@@ -43,6 +43,8 @@ languageDef =
                                         , "false"
                                         , "not"
                                         , "and"
+                                        , "repeat"
+                                        , "until"
                                         ]
                 , Token.reservedOpNames = 
                                         [ "+", "-", "*", ":="
@@ -81,6 +83,7 @@ statement' =  ifStmt
             <|> whileStmt
             <|> skipStmt
             <|> assignStmt
+            <|> repeatStmt
 
 ifStmt :: Parser Stmt
 ifStmt =
@@ -99,6 +102,14 @@ whileStmt =
        reserved "do"
        stmt <- statement
        return $ While cond stmt
+
+repeatStmt :: Parser Stmt
+repeatStmt =
+    do reserved "repeat"
+       stmt <- statement
+       reserved "until"
+       cond <- bExpression
+       return $ Repeat stmt cond
 
 assignStmt :: Parser Stmt
 assignStmt =
@@ -167,6 +178,8 @@ removeList (If bexpr stmt1 stmt2)    =
     If bexpr (removeList stmt1) (removeList stmt2)
 removeList (While bexpr body) = 
     While bexpr (removeList body)
+removeList (Repeat body bexpr) = 
+    Repeat (removeList body) bexpr
 removeList Skip =
     Skip
 

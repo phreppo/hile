@@ -13,31 +13,6 @@ import Lib
 s1    = state [("x",1), ("y",2), ("z",3)]
 empty = state []
 
-tests = [
-    assign1,
-    assign2,
-    skip1,
-    skip2,
-    if1,
-    if2,
-    if4,
-    wh1,
-    wh2,
-    wh3,
-    fact,
-    or1,
-    or2,
-    or3,
-    or4,
-    or5,
-    greater1,
-    greater2,
-    less1,
-    less2,
-    greater_eq1,
-    greater_eq2
-    ]
-
 build_test program s expected_result = 
     testCase program (compare_impure_states program s expected_result)
     where result = interpret program s
@@ -121,3 +96,48 @@ less1 = build_test "if 1 < 1 then th:=1 else el:=1"
 less2 = build_test "if 1 < x then th:=1 else el:=1" 
     (state [("x",100),("th",-1),("el",-1)])
     (state [("x",100),("th",1),("el",-1)])
+
+composition_sugar1 = build_test "skip; skip; if 0 < 1 then skip else skip"
+    (state [])
+    (state [])
+
+repeat1 = build_test "skip; x :=0; repeat x:=x+1 until x >= 10"
+    (state [])
+    (state [("x",10)])
+
+repeat2 = build_test "skip; x :=0; repeat x:=x+1 until x >= -10"
+    (state [])
+    (state [("x",1)])
+
+repeat3 = build_test "repeat x:=3 until true"
+    (state [])
+    (state [("x",3)])
+    
+tests = [
+    assign1,
+    assign2,
+    skip1,
+    skip2,
+    if1,
+    if2,
+    if4,
+    wh1,
+    wh2,
+    wh3,
+    fact,
+    or1,
+    or2,
+    or3,
+    or4,
+    or5,
+    greater1,
+    greater2,
+    less1,
+    less2,
+    greater_eq1,
+    greater_eq2,
+    composition_sugar1,
+    repeat1,
+    repeat2,
+    repeat3
+    ]
