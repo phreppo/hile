@@ -12,12 +12,13 @@ import WhileGrammar
 %tokentype { Token }
 %error { parseError }
 %nonassoc '>' '<'
+
+%left 'or'
+%left 'and'
+
 %left '+' '-'
 %left '*'
-%left NEG
-
-%left 'and'
-%left 'not'
+%left NEG 'not'
 
 %left 'else' -- else is stronger than ;
 %right ';'
@@ -46,6 +47,7 @@ import WhileGrammar
       '='             { TokenEq }
       'not'           { TokenNot }
       'and'           { TokenAnd }
+      'or'            { TokenOr }
 
 %%
 
@@ -67,6 +69,7 @@ BExpr : '(' BExpr ')'           { $2 }
       | bool                    { BoolConst $1 }
       | 'not' BExpr             { Not $2 }
       | BExpr 'and' BExpr       { BooleanBinary And $1 $3 }
+      | BExpr 'or' BExpr        { BooleanBinary Or $1 $3 }
 
 
 {
@@ -92,6 +95,7 @@ data Token
     | TokenElse
     | TokenNot
     | TokenAnd
+    | TokenOr
     deriving Show
 
 lexer :: String -> [Token]
@@ -122,6 +126,7 @@ lexVar cs =
         ("false",rest) -> TokenBoolConst False : lexer rest
         ("not",rest) -> TokenNot : lexer rest
         ("and",rest) -> TokenAnd : lexer rest
+        ("or",rest) -> TokenOr : lexer rest
         (var,rest)   -> TokenVar var : lexer rest
 
 -- main = getContents >>= print . calc . lexer
