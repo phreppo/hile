@@ -11,7 +11,7 @@ import WhileGrammar
 %name calc
 %tokentype { Token }
 %error { parseError }
-%nonassoc '<='
+%nonassoc '<=' '<' '>' '>='
 
 %left 'or'
 %left 'and'
@@ -50,6 +50,9 @@ import WhileGrammar
       'or'            { TokenOr }
 
       '<='            { TokenLessEq }
+      '>='            { TokenGreaterEq }
+      '<'             { TokenLess }
+      '>'             { TokenGreater }
 
 %%
 
@@ -74,7 +77,9 @@ BExpr : '(' BExpr ')'           { $2 }
       | BExpr 'or' BExpr        { BooleanBinary Or $1 $3 }
       | AExpr '=' AExpr         { ArithmeticBinary IsEqual $1 $3 }
       | AExpr '<=' AExpr        { ArithmeticBinary LessEq $1 $3 }
-
+      | AExpr '>=' AExpr        { ArithmeticBinary GreaterEq $1 $3 }
+      | AExpr '<' AExpr         { ArithmeticBinary Less $1 $3 }
+      | AExpr '>' AExpr         { ArithmeticBinary Greater $1 $3 }
 
 {
 
@@ -101,6 +106,9 @@ data Token
     | TokenAnd
     | TokenOr
     | TokenLessEq
+    | TokenLess
+    | TokenGreaterEq
+    | TokenGreater
     deriving Show
 
 lexer :: String -> [Token]
@@ -109,7 +117,11 @@ lexer (c:cs)
         | isSpace c = lexer cs
         | isAlpha c = lexVar (c:cs)
         | isDigit c = lexNum (c:cs)
+-- note that is important for pattern matching to have >= upper than >
 lexer ('<':'=':cs) = TokenLessEq : lexer cs
+lexer ('>':'=':cs) = TokenGreaterEq : lexer cs
+lexer ('<':cs) = TokenLess : lexer cs
+lexer ('>':cs) = TokenGreater : lexer cs
 lexer (':':'=':cs) = TokenAssign : lexer cs
 lexer ('+':cs) = TokenPlus : lexer cs
 lexer ('-':cs) = TokenMinus : lexer cs
