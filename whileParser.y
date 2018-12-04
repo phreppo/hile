@@ -15,6 +15,7 @@ import Data.Char
 %token 
       int             { TokenInt $$ }
       var             { TokenVar $$ }
+      'skip'          { TokenSkip }
       '+'             { TokenPlus }
       '-'             { TokenMinus }
       '*'             { TokenTimes }
@@ -28,6 +29,7 @@ import Data.Char
 
 Stmt  : var ':=' AExpr  { Assign $1 $3 }
       | Stmt ';' Stmt   { Seq $1 $3 }
+      | 'skip'          { Skip }
 
 AExpr : int {IntConst $1}
       | var {Var $1}
@@ -43,6 +45,7 @@ parseError _ = error "Parse error"
 
 data Stmt = Assign String AExpr
           | Seq Stmt Stmt
+          | Skip
           deriving (Show,Eq)
 
 data AExpr = Var      String
@@ -67,6 +70,7 @@ data Token
     | TokenOB
     | TokenCB
     | TokenSemi
+    | TokenSkip
     deriving Show
 
 lexer :: String -> [Token]
@@ -89,7 +93,7 @@ lexNum cs = TokenInt (read num) : lexer rest
 
 lexVar cs =
     case span isAlpha cs of
-        -- ("let",rest) -> TokenLet : lexer rest
+        ("skip",rest) -> TokenSkip : lexer rest
         -- ("in",rest)  -> TokenIn : lexer rest
         (var,rest)   -> TokenVar var : lexer rest
 
