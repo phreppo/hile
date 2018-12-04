@@ -23,6 +23,14 @@ example_state = state [("x",3),("y",1)]
 --      . initialize state
 --      . interpret (plain) while program
 
+parse_state :: String -> Maybe State
+parse_state string | (head string) /= '[' = Nothing
+                   | (last string) /= ']' = Nothing
+                   | otherwise = parse_state_elements ( init $ tail string )
+
+--  PRE: string without []
+parse_state_elements string = Nothing                    
+
 interpret :: String -> State -> IO State
 interpret source_program s = 
     interpret_parsed (parseString source_program) s
