@@ -20,6 +20,7 @@ import WhileGrammar
 %left '*'
 %left NEG 'not'
 
+%left 'do' -- do is stronger than else
 %left 'else' -- else is stronger than ;
 %right ';'
 
@@ -33,6 +34,9 @@ import WhileGrammar
       'if'            { TokenIf }
       'then'          { TokenThen }
       'else'          { TokenElse }
+
+      'while'         { TokenWhile }
+      'do'            { TokenDo }
       
       '+'             { TokenPlus }
       '-'             { TokenMinus }
@@ -61,6 +65,7 @@ Stmt  : '(' Stmt ')'    { $2 }
       | Stmt ';' Stmt   { Seq $1 $3 }
       | 'skip'          { Skip }
       | 'if' BExpr 'then' Stmt 'else' Stmt { If $2 $4 $6 }
+      | 'while' BExpr 'do' Stmt {While $2 $4 }
 
 AExpr : int           { IntConst $1 }
       | '(' AExpr ')' { $2 }
@@ -109,6 +114,8 @@ data Token
     | TokenLess
     | TokenGreaterEq
     | TokenGreater
+    | TokenWhile
+    | TokenDo
     deriving Show
 
 lexer :: String -> [Token]
@@ -145,6 +152,8 @@ lexVar cs =
         ("not",rest) -> TokenNot : lexer rest
         ("and",rest) -> TokenAnd : lexer rest
         ("or",rest) -> TokenOr : lexer rest
+        ("while",rest) -> TokenWhile : lexer rest
+        ("do",rest) -> TokenDo : lexer rest
         (var,rest)   -> TokenVar var : lexer rest
 
 -- main = getContents >>= print . calc . lexer
