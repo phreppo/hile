@@ -31,19 +31,22 @@ import Data.Char
 
 %%
 
-Stmt  : var ':=' AExpr  { Assign $1 $3 }
+Stmt  : '(' Stmt ')'    { $2 }
+      | var ':=' AExpr  { Assign $1 $3 }
       | Stmt ';' Stmt   { Seq $1 $3 }
       | 'skip'          { Skip }
       | 'if' BExpr 'then' Stmt 'else' Stmt { If $2 $4 $6 }
 
-AExpr : int {IntConst $1}
-      | var {Var $1}
+AExpr : int           { IntConst $1 }
+      | '(' AExpr ')' { $2 }
+      | var           { Var $1}
       | '-' AExpr %prec NEG     {Neg $2}
       | AExpr '+' AExpr         {ABinary Add $1 $3}
       | AExpr '-' AExpr         {ABinary Subtract $1 $3}
       | AExpr '*' AExpr         {ABinary Multiply $1 $3}
 
-BExpr : bool { BoolConst $1 }
+BExpr : '(' BExpr ')'  { $2 }
+      | bool           { BoolConst $1 }
 
 {
 
@@ -121,4 +124,5 @@ lexVar cs =
 main = getContents >>= print . calc . lexer
 
 p string = (print . calc . lexer) string
+
 }
