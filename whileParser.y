@@ -6,11 +6,11 @@ import Data.Char
 %name calc
 %tokentype { Token }
 %error { parseError }
-%right in
 %nonassoc '>' '<'
 %left '+' '-'
 %left '*'
 %left NEG
+%right ';'
 
 %token 
       int             { TokenInt $$ }
@@ -21,11 +21,13 @@ import Data.Char
       '('             { TokenOB }
       ')'             { TokenCB }
       ':='            { TokenAssign }
+      ';'             { TokenSemi }
       '='             { TokenEq }
 
 %%
 
-Stmt  : var ':=' AExpr {Assign $1 $3}
+Stmt  : var ':=' AExpr  { Assign $1 $3 }
+      | Stmt ';' Stmt   { Seq $1 $3 }
 
 AExpr : int {IntConst $1}
       | var {Var $1}
@@ -40,6 +42,7 @@ parseError :: [Token] -> a
 parseError _ = error "Parse error"
 
 data Stmt = Assign String AExpr
+          | Seq Stmt Stmt
           deriving (Show,Eq)
 
 data AExpr = Var      String
@@ -63,6 +66,7 @@ data Token
     | TokenEq
     | TokenOB
     | TokenCB
+    | TokenSemi
     deriving Show
 
 lexer :: String -> [Token]
@@ -77,6 +81,7 @@ lexer ('-':cs) = TokenMinus : lexer cs
 lexer ('*':cs) = TokenTimes : lexer cs
 lexer ('(':cs) = TokenOB : lexer cs
 lexer (')':cs) = TokenCB : lexer cs
+lexer (';':cs) = TokenSemi : lexer cs
 -- lexer ('=':cs) = TokenEq : lexer cs
 
 lexNum cs = TokenInt (read num) : lexer rest
