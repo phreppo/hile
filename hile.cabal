@@ -36,6 +36,7 @@ library
       SugarRemover
       EvalAExpr
       EvalBExpr
+      Parser
   other-modules:
       Paths_hile
   hs-source-dirs:
@@ -44,7 +45,8 @@ library
       base >=4.7 && <5,
       parsec,
       HUnit,
-      random
+      random,
+      array
   default-language: Haskell2010
 
 executable hile-exe

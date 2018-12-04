@@ -1,6 +1,11 @@
 {
-module Main where
+module Parser where
 import Data.Char
+import WhileGrammar
+
+-- Op precedence: https://en.cppreference.com/w/cpp/language/operator_precedence
+-- Happy precedence: https://www.haskell.org/happy/doc/html/sec-Precedences.html
+
 }
 
 %name calc
@@ -10,6 +15,10 @@ import Data.Char
 %left '+' '-'
 %left '*'
 %left NEG
+
+%left 'and'
+%left 'not'
+
 %left 'else' -- else is stronger than ;
 %right ';'
 
@@ -17,19 +26,26 @@ import Data.Char
       int             { TokenInt $$ }
       var             { TokenVar $$ }
       bool            { TokenBoolConst $$ }
+      
       'skip'          { TokenSkip }
+
       'if'            { TokenIf }
       'then'          { TokenThen }
       'else'          { TokenElse }
-      'not'           { TokenNot }
+      
       '+'             { TokenPlus }
       '-'             { TokenMinus }
       '*'             { TokenTimes }
+      
       '('             { TokenOB }
       ')'             { TokenCB }
+      
       ':='            { TokenAssign }
       ';'             { TokenSemi }
+      
       '='             { TokenEq }
+      'not'           { TokenNot }
+      'and'           { TokenAnd }
 
 %%
 
@@ -47,37 +63,16 @@ AExpr : int           { IntConst $1 }
       | AExpr '-' AExpr         {ABinary Subtract $1 $3}
       | AExpr '*' AExpr         {ABinary Multiply $1 $3}
 
-BExpr : '(' BExpr ')'  { $2 }
-      | bool           { BoolConst $1 }
-      | 'not' BExpr    { Not $2 }
+BExpr : '(' BExpr ')'           { $2 }
+      | bool                    { BoolConst $1 }
+      | 'not' BExpr             { Not $2 }
+      | BExpr 'and' BExpr       { BooleanBinary And $1 $3 }
 
 
 {
 
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
-
-data Stmt = Assign String AExpr
-          | Seq Stmt Stmt
-          | Skip
-          | If BExpr Stmt Stmt
-          deriving (Show,Eq)
-
-data AExpr = Var      String
-           | IntConst Integer
-           | Neg      AExpr
-           | ABinary  AArithemticBinOperator AExpr AExpr
-           deriving (Show,Eq)
-
-data AArithemticBinOperator = Add
-                            | Subtract
-                            | Multiply
-                            deriving (Show,Eq)
-
-data BExpr = BoolConst Bool
-           | Not BExpr
-           deriving (Show,Eq)
-           
 
 data Token
     = TokenInt Integer
@@ -96,6 +91,7 @@ data Token
     | TokenThen
     | TokenElse
     | TokenNot
+    | TokenAnd
     deriving Show
 
 lexer :: String -> [Token]
@@ -123,12 +119,12 @@ lexVar cs =
         ("else",rest) -> TokenElse : lexer rest
         ("skip",rest) -> TokenSkip : lexer rest
         ("true",rest) -> TokenBoolConst True : lexer rest
-        ("not",rest) -> TokenNot : lexer rest
         ("false",rest) -> TokenBoolConst False : lexer rest
-        -- ("in",rest)  -> TokenIn : lexer rest
+        ("not",rest) -> TokenNot : lexer rest
+        ("and",rest) -> TokenAnd : lexer rest
         (var,rest)   -> TokenVar var : lexer rest
 
-main = getContents >>= print . calc . lexer
+-- main = getContents >>= print . calc . lexer
 
 p string = (print . calc . lexer) string
 
