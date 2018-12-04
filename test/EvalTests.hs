@@ -4,7 +4,6 @@ module EvalTests
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import ParseWhile
 import WhileGrammar
 import Evaluator
 import State

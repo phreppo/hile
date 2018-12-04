@@ -7,7 +7,6 @@ import System.Random
 import Control.Monad (replicateM)
     
 import State
-import ParseWhile
 import WhileGrammar
 import Evaluator
 import Utility

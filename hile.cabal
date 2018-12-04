@@ -28,7 +28,6 @@ library
   exposed-modules:
       Lib
       State
-      ParseWhile
       WhileGrammar
       UpdateState
       Evaluator
