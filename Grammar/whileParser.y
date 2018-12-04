@@ -72,6 +72,7 @@ BExpr : '(' BExpr ')'           { $2 }
       | 'not' BExpr             { Not $2 }
       | BExpr 'and' BExpr       { BooleanBinary And $1 $3 }
       | BExpr 'or' BExpr        { BooleanBinary Or $1 $3 }
+      | AExpr '=' AExpr         { ArithmeticBinary IsEqual $1 $3 }
       | AExpr '<=' AExpr        { ArithmeticBinary LessEq $1 $3 }
 
 
@@ -100,7 +101,6 @@ data Token
     | TokenAnd
     | TokenOr
     | TokenLessEq
-
     deriving Show
 
 lexer :: String -> [Token]
@@ -117,7 +117,7 @@ lexer ('*':cs) = TokenTimes : lexer cs
 lexer ('(':cs) = TokenOB : lexer cs
 lexer (')':cs) = TokenCB : lexer cs
 lexer (';':cs) = TokenSemi : lexer cs
--- lexer ('=':cs) = TokenEq : lexer cs
+lexer ('=':cs) = TokenEq : lexer cs
 
 lexNum cs = TokenInt (read num) : lexer rest
         where (num,rest) = span isDigit cs

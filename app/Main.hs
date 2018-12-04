@@ -9,5 +9,5 @@ import Parser
 main :: IO ()
 main = do
         putStrLn "ciao"
-        p " if not true or not false and true then skip else skip "
+        p " if 3 = x then ciao := 123 else skip "
         return ()
