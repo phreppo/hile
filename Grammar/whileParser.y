@@ -11,7 +11,7 @@ import WhileGrammar
 %name calc
 %tokentype { Token }
 %error { parseError }
-%nonassoc '>' '<'
+%nonassoc '<='
 
 %left 'or'
 %left 'and'
@@ -49,6 +49,8 @@ import WhileGrammar
       'and'           { TokenAnd }
       'or'            { TokenOr }
 
+      '<='            { TokenLessEq }
+
 %%
 
 Stmt  : '(' Stmt ')'    { $2 }
@@ -70,6 +72,7 @@ BExpr : '(' BExpr ')'           { $2 }
       | 'not' BExpr             { Not $2 }
       | BExpr 'and' BExpr       { BooleanBinary And $1 $3 }
       | BExpr 'or' BExpr        { BooleanBinary Or $1 $3 }
+      | AExpr '<=' AExpr        { ArithmeticBinary LessEq $1 $3 }
 
 
 {
@@ -96,6 +99,8 @@ data Token
     | TokenNot
     | TokenAnd
     | TokenOr
+    | TokenLessEq
+
     deriving Show
 
 lexer :: String -> [Token]
@@ -104,6 +109,7 @@ lexer (c:cs)
         | isSpace c = lexer cs
         | isAlpha c = lexVar (c:cs)
         | isDigit c = lexNum (c:cs)
+lexer ('<':'=':cs) = TokenLessEq : lexer cs
 lexer (':':'=':cs) = TokenAssign : lexer cs
 lexer ('+':cs) = TokenPlus : lexer cs
 lexer ('-':cs) = TokenMinus : lexer cs
