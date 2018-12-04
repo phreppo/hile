@@ -10,6 +10,7 @@ import Data.Char
 %left '+' '-'
 %left '*'
 %left NEG
+%left 'else' -- else is stronger than ;
 %right ';'
 
 %token 
@@ -20,6 +21,7 @@ import Data.Char
       'if'            { TokenIf }
       'then'          { TokenThen }
       'else'          { TokenElse }
+      'not'           { TokenNot }
       '+'             { TokenPlus }
       '-'             { TokenMinus }
       '*'             { TokenTimes }
@@ -47,6 +49,8 @@ AExpr : int           { IntConst $1 }
 
 BExpr : '(' BExpr ')'  { $2 }
       | bool           { BoolConst $1 }
+      | 'not' BExpr    { Not $2 }
+
 
 {
 
@@ -71,6 +75,7 @@ data AArithemticBinOperator = Add
                             deriving (Show,Eq)
 
 data BExpr = BoolConst Bool
+           | Not BExpr
            deriving (Show,Eq)
            
 
@@ -90,6 +95,7 @@ data Token
     | TokenIf
     | TokenThen
     | TokenElse
+    | TokenNot
     deriving Show
 
 lexer :: String -> [Token]
@@ -117,6 +123,7 @@ lexVar cs =
         ("else",rest) -> TokenElse : lexer rest
         ("skip",rest) -> TokenSkip : lexer rest
         ("true",rest) -> TokenBoolConst True : lexer rest
+        ("not",rest) -> TokenNot : lexer rest
         ("false",rest) -> TokenBoolConst False : lexer rest
         -- ("in",rest)  -> TokenIn : lexer rest
         (var,rest)   -> TokenVar var : lexer rest
