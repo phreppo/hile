@@ -13,6 +13,7 @@ import Evaluator
 import Utility
 import SugarRemover
 import UpdateState
+import Parser
 
 e program = interpret program example_state
 example_state = state [("x",3),("y",1)]

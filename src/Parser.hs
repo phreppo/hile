@@ -686,7 +686,7 @@ lexVar cs =
 
 -- main = getContents >>= print . calc . lexer
 
-p string = (print . calc . lexer) string
+parse string = (calc . lexer) string
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
 {-# LINE 1 "<built-in>" #-}

@@ -158,6 +158,6 @@ lexVar cs =
 
 -- main = getContents >>= print . calc . lexer
 
-p string = (print . calc . lexer) string
+parse string = (calc . lexer) string
 
 }
