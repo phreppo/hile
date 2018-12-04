@@ -37,6 +37,9 @@ import WhileGrammar
 
       'while'         { TokenWhile }
       'do'            { TokenDo }
+
+      'repeat'        { TokenRepeat }
+      'until'         { TokenUntil }
       
       '+'             { TokenPlus }
       '-'             { TokenMinus }
@@ -65,7 +68,8 @@ Stmt  : '(' Stmt ')'    { $2 }
       | Stmt ';' Stmt   { Seq $1 $3 }
       | 'skip'          { Skip }
       | 'if' BExpr 'then' Stmt 'else' Stmt { If $2 $4 $6 }
-      | 'while' BExpr 'do' Stmt {While $2 $4 }
+      | 'while' BExpr 'do' Stmt { While $2 $4 }
+      | 'repeat' Stmt 'until' BExpr { Repeat $2 $4 }
 
 AExpr : int           { IntConst $1 }
       | '(' AExpr ')' { $2 }
@@ -116,6 +120,8 @@ data Token
     | TokenGreater
     | TokenWhile
     | TokenDo
+    | TokenRepeat
+    | TokenUntil
     deriving Show
 
 lexer :: String -> [Token]
@@ -154,6 +160,8 @@ lexVar cs =
         ("or",rest) -> TokenOr : lexer rest
         ("while",rest) -> TokenWhile : lexer rest
         ("do",rest) -> TokenDo : lexer rest
+        ("repeat",rest) -> TokenRepeat : lexer rest
+        ("until",rest) -> TokenUntil : lexer rest
         (var,rest)   -> TokenVar var : lexer rest
 
 -- main = getContents >>= print . calc . lexer

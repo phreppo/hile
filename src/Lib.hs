@@ -34,7 +34,8 @@ parse_state_elements string = Nothing
 
 interpret :: String -> State -> IO State
 interpret source_program s = 
-    interpret_parsed (parseString source_program) s
+    interpret_parsed (parse source_program) s
+    -- interpret "x := 1; if x = 1 then y:=1; x := 1 else skip" empty_state
         
 interpret_parsed :: Stmt -> State -> IO State
 interpret_parsed abstract_syntax_tree s =
