@@ -15,7 +15,11 @@ import Data.Char
 %token 
       int             { TokenInt $$ }
       var             { TokenVar $$ }
+      bool            { TokenBoolConst $$ }
       'skip'          { TokenSkip }
+      'if'            { TokenIf }
+      'then'          { TokenThen }
+      'else'          { TokenElse }
       '+'             { TokenPlus }
       '-'             { TokenMinus }
       '*'             { TokenTimes }
@@ -30,6 +34,7 @@ import Data.Char
 Stmt  : var ':=' AExpr  { Assign $1 $3 }
       | Stmt ';' Stmt   { Seq $1 $3 }
       | 'skip'          { Skip }
+      | 'if' BExpr 'then' Stmt 'else' Stmt { If $2 $4 $6 }
 
 AExpr : int {IntConst $1}
       | var {Var $1}
@@ -37,6 +42,8 @@ AExpr : int {IntConst $1}
       | AExpr '+' AExpr         {ABinary Add $1 $3}
       | AExpr '-' AExpr         {ABinary Subtract $1 $3}
       | AExpr '*' AExpr         {ABinary Multiply $1 $3}
+
+BExpr : bool { BoolConst $1 }
 
 {
 
@@ -46,6 +53,7 @@ parseError _ = error "Parse error"
 data Stmt = Assign String AExpr
           | Seq Stmt Stmt
           | Skip
+          | If BExpr Stmt Stmt
           deriving (Show,Eq)
 
 data AExpr = Var      String
@@ -59,8 +67,13 @@ data AArithemticBinOperator = Add
                             | Multiply
                             deriving (Show,Eq)
 
+data BExpr = BoolConst Bool
+           deriving (Show,Eq)
+           
+
 data Token
     = TokenInt Integer
+    | TokenBoolConst Bool
     | TokenVar String
     | TokenAssign
     | TokenPlus
@@ -71,6 +84,9 @@ data Token
     | TokenCB
     | TokenSemi
     | TokenSkip
+    | TokenIf
+    | TokenThen
+    | TokenElse
     deriving Show
 
 lexer :: String -> [Token]
@@ -93,7 +109,12 @@ lexNum cs = TokenInt (read num) : lexer rest
 
 lexVar cs =
     case span isAlpha cs of
+        ("if",rest) -> TokenIf : lexer rest
+        ("then",rest) -> TokenThen : lexer rest
+        ("else",rest) -> TokenElse : lexer rest
         ("skip",rest) -> TokenSkip : lexer rest
+        ("true",rest) -> TokenBoolConst True : lexer rest
+        ("false",rest) -> TokenBoolConst False : lexer rest
         -- ("in",rest)  -> TokenIn : lexer rest
         (var,rest)   -> TokenVar var : lexer rest
 
