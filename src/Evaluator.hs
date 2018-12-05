@@ -1,8 +1,6 @@
 module Evaluator 
     (   
         semantics,
-        -- TODO: remove these
-        fix,fnth,lub,cond
     )
 where
 
@@ -18,31 +16,36 @@ import UpdateState
 -------------------------------------------------------------------------------
 
 semantics :: Stmt -> State -> State
-semantics (Assign identifier aexpr) = update_state identifier aexpr
-semantics Skip = id
+semantics (Assign identifier aexpr) = 
+    update_state identifier aexpr
+semantics Skip = 
+    id
 semantics (Seq s1 s2) = 
     (semantics s2) . (semantics s1)
 semantics (If b s1 s2) =
     cond ((eval_bexpr b), (semantics s1), (semantics s2))
-semantics (While b s) = fix f
-    where f = \g -> cond (eval_bexpr b, g . semantics s, id)
+semantics (While b s) = 
+    fix f
+    where f = \g -> cond (eval_bexpr b, g . semantics s, partial_id )
 
-cond :: (State -> Bool, State -> State, State -> State) -> State -> State
+cond :: (State -> Bool, State -> p, State -> p) -> State -> p
+-- cond :: (State -> Bool, State -> Partial State, State -> Partial State) -> State -> Partial State
+-- cond :: (State -> Bool, State -> State, State -> State) -> State -> State
 cond (p, g1, g2) s
     | p s == True  = g1 s
     | p s == False = g2 s
 
 -- Knaster–Tarski
+fix :: ((State -> Partial State) -> State -> Partial State) -> State -> State
+fix f = 
+    \s -> lub [ apply_times f n bottom | n <- [0..] ] s
 
-fix :: ((State -> State) -> (State -> State)) -> State -> State
-fix f = lub [ fnth f n bottom  | n <- [0..] ] 
+apply_times :: ((State -> Partial State) -> (State -> Partial State)) -> 
+  Int -> (State -> Partial State) -> State -> Partial State
+apply_times f n = 
+    foldr (.) id (replicate n f)
 
-fnth :: ((State -> State) -> (State -> State)) -> Int -> (State -> State) -> State -> State
-fnth f n = (foldr (.) id (replicate n f))
-  
-lub :: [(State -> State)] -> State -> State
-lub (f:fs) s 
-    -- TODO: remove comment
-    | s' /= Undef = s' -- if exist g (and g s) is unique, also g is the least
-    | otherwise   = lub fs s
-    where s' = f s
+lub :: [(State -> Partial State)] -> State -> State
+lub (g:gs) s 
+    | g s /= Undef = (purify . g) s
+    | otherwise    = lub gs s -- lfp found

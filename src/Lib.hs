@@ -55,8 +55,8 @@ interpret_with_initialized_state abstract_syntax_tree s =
 
 update_entries :: State -> State -> State          
 -- takes the first state and overwrites values of the second on it
-update_entries first_state (Def []) = first_state
-update_entries first_state (Def (first_entry:other_entries)) =
+update_entries first_state (S []) = first_state
+update_entries first_state (S (first_entry:other_entries)) =
     update_entries (update_entry first_entry first_state) (state other_entries)
 
 build_state :: [String] -> [Integer] -> State

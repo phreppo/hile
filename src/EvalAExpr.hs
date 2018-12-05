@@ -28,6 +28,6 @@ assoc_identifier :: String -> State -> Integer
 -- and fill the initial state with random numbers
 
 -- PRE: state contains one entry with the identifier "identifier"
-assoc_identifier identifier (Def ((first_identifier,value):entries)) 
+assoc_identifier identifier (S ((first_identifier,value):entries)) 
     | first_identifier == identifier = value
     | otherwise                      = assoc_identifier identifier (state entries)
