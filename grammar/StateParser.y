@@ -63,8 +63,10 @@ lexNum cs = TokenStateInt (read num) : lexer_state rest
         where (num,rest) = span isDigit cs
 
 lexVar cs =
-    case span isAlpha cs of
+    case span isAlphaOrDigit cs of
         (var,rest)   -> TokenStateVar var : lexer_state rest
+
+isAlphaOrDigit c = (isAlpha c) || (isDigit c)
 
 parse_state string = (state_p . lexer_state) string
 

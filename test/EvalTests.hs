@@ -128,7 +128,7 @@ for3 = build_test "y := 0; for x:=3 to 5 do y:=y+1"
 
 fib1 = build_test fibonacci
     (state [("x",14)])
-    (state [("p",377),("pp",233),("i",15),("x",14),("fn",377)])
+    (state [("fn1",377),("fn2",233),("i",15),("x",14),("fn",377)])
 
 tests = [
     assign1,

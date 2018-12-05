@@ -154,7 +154,7 @@ lexNum cs = TokenInt (read num) : lexer rest
         where (num,rest) = span isDigit cs
 
 lexVar cs =
-    case span isAlpha cs of
+    case span isAlphaOrDigit cs of
         ("if",rest) -> TokenIf : lexer rest
         ("then",rest) -> TokenThen : lexer rest
         ("else",rest) -> TokenElse : lexer rest
@@ -171,6 +171,8 @@ lexVar cs =
         ("for",rest) -> TokenFor : lexer rest
         ("to",rest) -> TokenTo : lexer rest
         (var,rest)   -> TokenVar var : lexer rest
+
+isAlphaOrDigit c = (isAlpha c) || (isDigit c)
 
 parse string = (while_parse . lexer) string
 
