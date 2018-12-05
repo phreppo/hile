@@ -6,7 +6,7 @@ import State
 import WhilePrograms
 
 program = factorial
-s = "[x -> 3]"
+s = "[x -> -1]"
 
 main = do
         print_header

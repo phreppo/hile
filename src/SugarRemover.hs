@@ -1,7 +1,5 @@
 module SugarRemover 
-    (
-        remove_sugar
-    )
+    ( remove_sugar )
 where
 
 import WhileGrammar
@@ -12,14 +10,12 @@ import WhileGrammar
 --      - <
 --      - >
 --      - >=
---  AExpr sugar:
---          TODO: remove this if thre are not aexpr sugar
+--      - !=
 --  Stmt sugar:
 --      - repeat S until b
 --      - for x:=a1 to a2 do S 
 --------------------------------------------------------------------------------
 
--- a < b == (not (a == b)) and (a <= b)
 remove_sugar :: Stmt -> Stmt
 remove_sugar (Seq stmt1 stmt2) = 
     Seq (remove_sugar stmt1) (remove_sugar stmt2)
@@ -52,7 +48,7 @@ remove_bsugar (BoolConst b) = BoolConst b
 
 remove_bsugar (Not bexpr) = Not (remove_bsugar bexpr)
 
--- simulate or with AND and NOT: https://en.wikipedia.org/wiki/NAND_logic
+-- simulate OR with AND and NOT: https://en.wikipedia.org/wiki/NAND_logic
 remove_bsugar (BooleanBinary Or left right) = 
     make_nand 
         (make_nand sugar_free_left sugar_free_left) 
@@ -90,9 +86,9 @@ remove_bsugar (ArithmeticBinary op a1 a2) =
     where sugar_free_a1 = remove_asugar a1
           sugar_free_a2 = remove_asugar a2
 
+remove_asugar :: AExpr -> AExpr
+remove_asugar aexpr = aexpr
+
 make_nand :: BExpr -> BExpr -> BExpr
 make_nand bexpr1 bexpr2 =
     Not (BooleanBinary And bexpr1 bexpr2)
-
-remove_asugar :: AExpr -> AExpr
-remove_asugar aexpr = aexpr

@@ -11,15 +11,11 @@ import Control.Monad (replicateM)
 import State
 import WhileGrammar
 import Semantics
-import Utility
 import SugarRemover
 import UpdateState
 import Parser
 import StateParser
 import WhilePrograms
-
-e program = interpret program example_state
-example_state = state [("x",3),("y",1)]
 
 -- Interpretation process
 --      . parse

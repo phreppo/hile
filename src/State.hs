@@ -5,7 +5,6 @@ module State
      purify,
      state,
      bottom,
-     empty_state,
      add_entry,
      partial_id
     )
@@ -47,9 +46,6 @@ contains :: [Entry] -> Entry -> Bool
 contains []      entry = False
 contains (first_entry:other_entries) entry =
     (first_entry == entry) || (other_entries `contains` entry)
-
-empty_state :: State
-empty_state = state []
 
 add_entry :: State -> Entry -> State
 add_entry (S list) entry = S ([entry] ++ list) 

@@ -31,7 +31,6 @@ library
       WhileGrammar
       UpdateState
       Semantics
-      Utility
       SugarRemover
       EvalAExpr
       EvalBExpr
