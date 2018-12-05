@@ -15,7 +15,6 @@ main = do
 
 print_header =
         do 
-                putStrLn "(W)hile Interpreter"
                 putStr "S|[\""
                 putStr program 
                 putStr "\"]| "

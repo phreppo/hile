@@ -130,6 +130,14 @@ fib1 = build_test fibonacci
     (state [("x",14)])
     (state [("fn1",377),("fn2",233),("i",15),("x",14),("fn",377)])
 
+neq1 = build_test "x :=1; if x != 1 then y:=1 else y:=0"
+    (state [])
+    (state [("x",1), ("y",0)])   
+    
+neq2 = build_test "x :=33; if x != 1 then y:=1 else y:=0"
+    (state [])
+    (state [("x",33), ("y",1)])   
+
 tests = [
     assign1,
     assign2,
@@ -160,5 +168,7 @@ tests = [
     for1,
     for2,
     for3,
-    fib1
+    fib1,
+    neq1,
+    neq2
     ]

@@ -14,6 +14,8 @@ where
 data State = S [Entry]
            deriving (Read)
 
+-- Ghci Integer implementation: https://ghc.haskell.org/trac/ghc/wiki/Commentary/Libraries/Integer
+-- GMP Integer representation: https://gmplib.org/manual/Integer-Internals.html#Integer-Internals
 type Entry = (String, Integer)
 
 data Partial a = Undef
@@ -65,7 +67,7 @@ entries_to_string_rec [] = ""
 entries_to_string_rec (e1:[]) = 
     (entry_to_string e1)
 entries_to_string_rec (e1:e2:rest) = 
-    (entry_to_string e1) ++ "," ++ entries_to_string_rec (e2:rest)
+    (entry_to_string e1) ++ ", " ++ entries_to_string_rec (e2:rest)
 
 entry_to_string (identifier ,val) =
    identifier ++ " -> " ++ (show val)

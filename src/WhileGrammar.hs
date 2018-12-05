@@ -45,6 +45,7 @@ data BBooleanBinOperator = And
 data BArithmeticBinOperator = LessEq 
                             | IsEqual
                             -- Sugar
+                            | IsNEqual
                             | Less
                             | Greater
                             | GreaterEq

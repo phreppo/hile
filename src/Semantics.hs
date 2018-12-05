@@ -16,6 +16,7 @@ import UpdateState
 -------------------------------------------------------------------------------
 
 semantics :: Stmt -> State -> State
+-- PRE: sugar-free while program
 semantics (Assign identifier aexpr) = 
     update_state identifier aexpr
 semantics Skip = 

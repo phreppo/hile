@@ -55,6 +55,7 @@ import WhileGrammar
       ';'             { TokenSemi }
       
       '='             { TokenEq }
+      '!='            { TokenNEq }
       'not'           { TokenNot }
       'and'           { TokenAnd }
       'or'            { TokenOr }
@@ -88,6 +89,7 @@ BExpr : '(' BExpr ')'           { $2 }
       | 'not' BExpr             { Not $2 }
       | BExpr 'and' BExpr       { BooleanBinary And $1 $3 }
       | BExpr 'or' BExpr        { BooleanBinary Or $1 $3 }
+      | AExpr '!=' AExpr        { ArithmeticBinary IsNEqual $1 $3 }
       | AExpr '=' AExpr         { ArithmeticBinary IsEqual $1 $3 }
       | AExpr '<=' AExpr        { ArithmeticBinary LessEq $1 $3 }
       | AExpr '>=' AExpr        { ArithmeticBinary GreaterEq $1 $3 }
@@ -128,6 +130,7 @@ data Token
     | TokenUntil
     | TokenFor
     | TokenTo
+    | TokenNEq
     deriving Show
 
 lexer :: String -> [Token]
@@ -137,6 +140,7 @@ lexer (c:cs)
         | isAlpha c = lexVar (c:cs)
         | isDigit c = lexNum (c:cs)
 -- note that is important for pattern matching to have >= upper than >
+lexer ('!':'=':cs) = TokenNEq : lexer cs
 lexer ('<':'=':cs) = TokenLessEq : lexer cs
 lexer ('>':'=':cs) = TokenGreaterEq : lexer cs
 lexer ('<':cs) = TokenLess : lexer cs

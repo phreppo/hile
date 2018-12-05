@@ -81,6 +81,10 @@ remove_bsugar (ArithmeticBinary GreaterEq a1 a2) =
     -- not less
     Not (remove_bsugar (ArithmeticBinary Less a1 a2))
 
+remove_bsugar (ArithmeticBinary IsNEqual a1 a2) =
+    -- not eq
+    Not (remove_bsugar (ArithmeticBinary IsEqual a1 a2))
+
 remove_bsugar (ArithmeticBinary op a1 a2) =
     ArithmeticBinary op sugar_free_a1 sugar_free_a2
     where sugar_free_a1 = remove_asugar a1
