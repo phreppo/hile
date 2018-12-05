@@ -2,10 +2,21 @@ module Main where
 
 import Lib
 import Parser
+import State
+import WhilePrograms
 
-main :: IO ()
+program = factorial
+s = "[x -> 3]"
+
 main = do
-        putStrLn "ciao"
-        (print . parse) " while 3 >= x and y > 0 do if true then skip else skip;skip "
-        -- p " while 3 >= x and y > 0 do if true then skip else skip;skip "
-        return ()
+        print_header
+        s <-  i (program, s)
+        print s
+
+print_header =
+        do 
+                putStrLn "(W)hile Interpreter"
+                putStr "S|[\""
+                putStr program 
+                putStr "\"]| "
+                putStrLn s 

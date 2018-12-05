@@ -12,7 +12,7 @@ module State
 where
 
 data State = S [Entry]
-           deriving (Show,Read)
+           deriving (Read)
 
 type Entry = (String, Integer)
 
@@ -51,3 +51,21 @@ empty_state = state []
 
 add_entry :: State -> Entry -> State
 add_entry (S list) entry = S ([entry] ++ list) 
+
+instance Show State where
+    show (S []) = "[]"
+    show (S entries) = entries_to_string entries
+
+entries_to_string :: [Entry] -> String
+entries_to_string entries =
+    "[" ++ (entries_to_string_rec entries) ++ "]"
+
+entries_to_string_rec :: [Entry] -> String    
+entries_to_string_rec [] = ""
+entries_to_string_rec (e1:[]) = 
+    (entry_to_string e1)
+entries_to_string_rec (e1:e2:rest) = 
+    (entry_to_string e1) ++ "," ++ entries_to_string_rec (e2:rest)
+
+entry_to_string (identifier ,val) =
+   identifier ++ " -> " ++ (show val)
