@@ -30,7 +30,7 @@ library
       State
       WhileGrammar
       UpdateState
-      Evaluator
+      Semantics
       Utility
       SugarRemover
       EvalAExpr

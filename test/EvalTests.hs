@@ -5,7 +5,7 @@ import Test.Tasty
 import Test.Tasty.HUnit
 
 import WhileGrammar
-import Evaluator
+import Semantics
 import State
 import Lib
 import WhilePrograms

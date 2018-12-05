@@ -1,7 +1,7 @@
 module Utility 
 where
 
-import Evaluator
+import Semantics
 
 -- e program = interpret program example_state
 

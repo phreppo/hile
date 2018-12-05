@@ -10,7 +10,7 @@ import Control.Monad (replicateM)
     
 import State
 import WhileGrammar
-import Evaluator
+import Semantics
 import Utility
 import SugarRemover
 import UpdateState

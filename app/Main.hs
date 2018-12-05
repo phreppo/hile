@@ -1,9 +1,6 @@
 module Main where
 
 import Lib
--- import Evaluator
--- import Utility
--- import Parser
 import Parser
 
 main :: IO ()
