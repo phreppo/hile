@@ -26,7 +26,7 @@ happyExpList = Happy_Data_Array.listArray (0,145) ([42624,66,0,512,40960,4265,0,
 {-# NOINLINE happyExpListPerState #-}
 happyExpListPerState st =
     token_strs_expected
-  where token_strs = ["error","%dummy","%start_calc","Stmt","AExpr","BExpr","int","var","bool","'skip'","'if'","'then'","'else'","'while'","'do'","'repeat'","'until'","'for'","'to'","'+'","'-'","'*'","'('","')'","':='","';'","'='","'not'","'and'","'or'","'<='","'>='","'<'","'>'","%eof"]
+  where token_strs = ["error","%dummy","%start_while_parse","Stmt","AExpr","BExpr","int","var","bool","'skip'","'if'","'then'","'else'","'while'","'do'","'repeat'","'until'","'for'","'to'","'+'","'-'","'*'","'('","')'","':='","';'","'='","'not'","'and'","'or'","'<='","'>='","'<'","'>'","%eof"]
         bit_start = st * 35
         bit_end = (st + 1) * 35
         read_bit = readArrayBit happyExpList
@@ -723,7 +723,7 @@ happyReturn1 :: () => a -> b -> HappyIdentity a
 happyReturn1 = \a tks -> (return) a
 happyError' :: () => ([(Token)], [String]) -> HappyIdentity a
 happyError' = HappyIdentity . (\(tokens, _) -> parseError tokens)
-calc tks = happyRunIdentity happySomeParser where
+while_parse tks = happyRunIdentity happySomeParser where
  happySomeParser = happyThen (happyParse action_0 tks) (\x -> case x of {HappyAbsSyn4 z -> happyReturn z; _other -> notHappyAtAll })
 
 happySeq = happyDontSeq
@@ -805,7 +805,7 @@ lexVar cs =
         ("to",rest) -> TokenTo : lexer rest
         (var,rest)   -> TokenVar var : lexer rest
 
-parse string = (calc . lexer) string
+parse string = (while_parse . lexer) string
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
 {-# LINE 1 "<built-in>" #-}

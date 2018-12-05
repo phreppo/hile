@@ -8,7 +8,7 @@ import WhileGrammar
 
 }
 
-%name calc
+%name while_parse
 %tokentype { Token }
 %error { parseError }
 %nonassoc '<=' '<' '>' '>='
@@ -172,6 +172,6 @@ lexVar cs =
         ("to",rest) -> TokenTo : lexer rest
         (var,rest)   -> TokenVar var : lexer rest
 
-parse string = (calc . lexer) string
+parse string = (while_parse . lexer) string
 
 }
