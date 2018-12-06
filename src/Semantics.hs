@@ -40,6 +40,7 @@ cond (p, g1, g2) s
 -- Knaster–Tarski
 fix :: ((State -> Partial State) -> State -> Partial State) -> State -> State
 fix f = 
+    -- p.104
     \s -> lub [ apply_times f n bottom | n <- [0..] ] s
 
 apply_times :: ((State -> Partial State) -> (State -> Partial State)) -> 
@@ -49,6 +50,6 @@ apply_times f n =
 
 lub :: [(State -> Partial State)] -> State -> State
 -- Tail recursion: https://wiki.haskell.org/Tail_recursion
-lub (g:gs) s 
-    | g s /= Undef = purify $ g s -- lfp found
-    | otherwise    = lub gs s
+lub (fn:fs) s 
+    | fn s /= Undef = purify $ fn s -- lfp found. IMPORTANT: p96 
+    | otherwise     = lub fs s

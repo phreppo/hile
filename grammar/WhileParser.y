@@ -98,6 +98,7 @@ BExpr : '(' BExpr ')'           { $2 }
 {
 
 parseError :: [Token] -> a
+-- https://www.haskell.org/happy/doc/html/sec-monads.html#sec-exception
 parseError _ = error "Parse error"
 
 data Token
