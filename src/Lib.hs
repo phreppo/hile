@@ -48,7 +48,6 @@ interpret_with_initialized_state :: Stmt -> State -> IO State
 interpret_with_initialized_state abstract_syntax_tree s =
     return $ (semantics abstract_syntax_tree) s
 
-
 update_entries :: State -> State -> State          
 -- takes the first state and overwrites values of the second on it
 update_entries first_state (S []) = first_state

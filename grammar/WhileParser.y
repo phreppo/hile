@@ -3,7 +3,7 @@ module Parser where
 import Data.Char
 import WhileGrammar
 
--- Op precedence: https://en.cppreference.com/w/cpp/language/operator_precedence
+-- Op precedence:    https://en.cppreference.com/w/cpp/language/operator_precedence
 -- Happy precedence: https://www.haskell.org/happy/doc/html/sec-Precedences.html
 
 }
@@ -20,9 +20,8 @@ import WhileGrammar
 %left '*'
 %left NEG 'not'
 
-%left 'do' -- do is stronger than else
-%left 'else' -- else is stronger than ;
-%right ';'
+%left 'do' 'else' 
+%right ';'         -- ; is stronger than do and else
 
 %token 
       int             { TokenInt $$ }

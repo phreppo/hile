@@ -16,7 +16,8 @@ import UpdateState
 -------------------------------------------------------------------------------
 
 semantics :: Stmt -> State -> State
--- PRE: sugar-free while program
+-- PRE:    sugar-free while program 
+--      && every possible variabile in the program has an entry in the state
 semantics (Assign identifier aexpr) = 
     update_state identifier aexpr
 semantics Skip = 
@@ -47,6 +48,7 @@ apply_times f n =
     foldr (.) id (replicate n f)
 
 lub :: [(State -> Partial State)] -> State -> State
+-- Tail recursion: https://wiki.haskell.org/Tail_recursion
 lub (g:gs) s 
-    | g s /= Undef = (purify . g) s
-    | otherwise    = lub gs s -- lfp found
+    | g s /= Undef = purify $ g s -- lfp found
+    | otherwise    = lub gs s

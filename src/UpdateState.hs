@@ -13,10 +13,8 @@ update_state identifier aexpr s =
 
 update_entry :: Entry -> State -> State
 update_entry (identifier,value) s
-    | identifier_in_state identifier s = 
-        assign_entry_in_state (identifier,value) s 
-    | otherwise = 
-        add_entry_to_state (identifier,value) s 
+    | identifier_in_state identifier s = assign_entry_in_state (identifier,value) s 
+    | otherwise                        = add_entry_to_state (identifier,value) s 
 
 identifier_in_state :: String -> State -> Bool
 identifier_in_state identifier (S [])  = False

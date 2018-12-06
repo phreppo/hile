@@ -3,7 +3,7 @@ module Parser where
 import Data.Char
 import WhileGrammar
 
--- Op precedence: https://en.cppreference.com/w/cpp/language/operator_precedence
+-- Op precedence:    https://en.cppreference.com/w/cpp/language/operator_precedence
 -- Happy precedence: https://www.haskell.org/happy/doc/html/sec-Precedences.html
 import qualified Data.Array as Happy_Data_Array
 import qualified Data.Bits as Bits
