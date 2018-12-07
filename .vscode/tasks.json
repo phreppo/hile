@@ -95,6 +95,54 @@
                     ]
                 }
             ]
+        },
+        {
+            "taskName": "Run",
+            "command": "stack build && stack exec hile-exe",
+            "problemMatcher": [
+                {
+                    "owner": "hspec",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceRoot}"
+                    ],
+                    "pattern": [
+                        {
+                            "regexp": "^\\s+(.*):(\\d+):",
+                            "file": 1,
+                            "line": 2
+                        },
+                        {
+                            "regexp": "^\\s+\\d+\\)\\s+(.*)",
+                            "message": 1
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "taskName": "Ghci",
+            "command": "stack ghci",
+            "problemMatcher": [
+                {
+                    "owner": "hspec",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceRoot}"
+                    ],
+                    "pattern": [
+                        {
+                            "regexp": "^\\s+(.*):(\\d+):",
+                            "file": 1,
+                            "line": 2
+                        },
+                        {
+                            "regexp": "^\\s+\\d+\\)\\s+(.*)",
+                            "message": 1
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

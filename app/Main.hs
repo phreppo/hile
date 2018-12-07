@@ -8,17 +8,17 @@ import Data.Char
 import System.IO
 
 program = factorial
-s = "[x -> -1]"
+s       = "[x -> 10]"
 
--- main = do
---         print_header
---         s <-  i (program, s)
---         print s
+main = do
+        print_header
+        s <-  i (program, s)
+        print s
 
-main = 
-        do
-                putStrLn "(W)hile interpreter REPL"
-                repl (S [])
+-- main = 
+--         do
+--                 putStrLn "(W)hile interpreter REPL"
+--                 repl (S [])
 
 print_header =
         do 
