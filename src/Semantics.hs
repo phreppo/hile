@@ -38,7 +38,7 @@ cond (p, g1, g2) s
     | p s == False = g2 s
 
 -- Knaster–Tarski
-fix :: ((State -> Partial State) -> State -> Partial State) -> State -> State
+fix :: ((State -> Partial State) -> (State -> Partial State)) -> State -> State
 fix f = 
     -- p.104
     \s -> lub [ apply_times f n bottom | n <- [0..] ] s
