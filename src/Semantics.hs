@@ -51,5 +51,5 @@ apply_times f n =
 lub :: [(State -> Partial State)] -> State -> State
 -- Tail recursion: https://wiki.haskell.org/Tail_recursion
 lub (fn:fs) s 
-    | fn s /= Undef = purify $ fn s -- lfp found. IMPORTANT: p96 
+    | fn s /= Undef = purify $ fn s -- lfp found
     | otherwise     = lub fs s
