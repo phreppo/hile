@@ -61,7 +61,7 @@ get_random_integers :: Int -> IO [Integer]
 get_random_integers n = replicateM n (get_random_integer)
 
 get_random_integer :: IO Integer
--- Random generator: https://hackage.haskell.org/package/random-1.0.0.3/docs/src/System-Random.html
+-- Random generator: https://hackage.haskell.org/package/random-1.0.0.3/docs/src/System-Random.html : Instance Random Integer
 -- x = maxBound :: Int is used as upper bound
 get_random_integer = randomIO
 
