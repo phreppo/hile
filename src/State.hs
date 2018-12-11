@@ -1,12 +1,12 @@
 module State
     (Entry,
      State(..),
-     Partial(..),
+     Possibly(..),
      purify,
      state,
      bottom,
      add_entry,
-     partial_id
+     possibly_id
     )
 where
 
@@ -25,18 +25,18 @@ instance Show State where
     show (S []) = "[]"
     show (S entries) = entries_to_string entries
 
-data Partial a = Undef
+data Possibly a = Undef
                | Defined a  
                deriving (Show,Read,Eq)
 
-bottom :: State -> Partial State
+bottom :: State -> Possibly State
 bottom = \s -> Undef
 
-purify :: Partial State -> State
+purify :: Possibly State -> State
 purify (Defined s) = s
 
-partial_id :: State -> Partial State
-partial_id = Defined
+possibly_id :: State -> Possibly State
+possibly_id = Defined
 
 state :: [Entry] -> State
 state entries = S entries
