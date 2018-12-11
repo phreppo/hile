@@ -27,7 +27,7 @@ semantics Skip =
 semantics (Seq s1 s2) = 
     (semantics s2) . (semantics s1)
 semantics (If b s1 s2) =
-    cond ((eval_bexpr b), (semantics s1), (semantics s2))
+    cond (eval_bexpr b, semantics s1, semantics s2)
 semantics (While b s) = 
     fix f
     where f = \g -> cond (eval_bexpr b, g . semantics s, possibly_id )
@@ -43,7 +43,7 @@ cond (p, g1, g2) s
 fix :: ((State -> Possibly State) -> (State -> Possibly State)) -> State -> State
 fix f = 
     -- p.104
-    \s -> lub [ apply_times f n bottom | n <- [0..] ] s
+    lub [ apply_times f n bottom | n <- [0..] ]
 
 apply_times :: ((State -> Possibly State) -> (State -> Possibly State)) -> 
   Int -> (State -> Possibly State) -> State -> Possibly State
