@@ -55,6 +55,8 @@ data AExpr = Var      String
            | IntConst Integer
            | Neg      AExpr
            | ABinary  AArithemticBinOperator AExpr AExpr
+          --  Sugar
+           | Exp      AExpr Integer
            deriving (Show,Eq)
 
 data AArithemticBinOperator = Add

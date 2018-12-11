@@ -18,6 +18,7 @@ import WhileGrammar
 
 %left '+' '-'
 %left '*'
+%left '^'
 %left NEG 'not'
 
 %left 'do' 'else' 
@@ -46,6 +47,7 @@ import WhileGrammar
       '+'             { TokenPlus }
       '-'             { TokenMinus }
       '*'             { TokenTimes }
+      '^'             { TokenExp }
       
       '('             { TokenOB }
       ')'             { TokenCB }
@@ -82,6 +84,7 @@ AExpr : int                     { IntConst $1 }
       | AExpr '+' AExpr         { ABinary Add $1 $3}
       | AExpr '-' AExpr         { ABinary Subtract $1 $3}
       | AExpr '*' AExpr         { ABinary Multiply $1 $3}
+      | AExpr '^' int           { Exp $1 $3 }
 
 BExpr : '(' BExpr ')'           { $2 }
       | bool                    { BoolConst $1 }
@@ -131,6 +134,7 @@ data Token
     | TokenFor
     | TokenTo
     | TokenNEq
+    | TokenExp
     deriving Show
 
 lexer :: String -> [Token]
@@ -153,6 +157,7 @@ lexer ('(':cs) = TokenOB : lexer cs
 lexer (')':cs) = TokenCB : lexer cs
 lexer (';':cs) = TokenSemi : lexer cs
 lexer ('=':cs) = TokenEq : lexer cs
+lexer ('^':cs) = TokenExp : lexer cs
 
 lexNum cs = TokenInt (read num) : lexer rest
         where (num,rest) = span isDigit cs

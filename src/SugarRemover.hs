@@ -11,6 +11,8 @@ import WhileGrammar
 --      - >
 --      - >=
 --      - !=
+--  AExpr sugar:
+--      - ^ (onl with natural exponent)
 --  Stmt sugar:
 --      - repeat S until b
 --      - for x:=a1 to a2 do S 
@@ -87,7 +89,20 @@ remove_bsugar (ArithmeticBinary op a1 a2) =
           sugar_free_a2 = remove_asugar a2
 
 remove_asugar :: AExpr -> AExpr
-remove_asugar aexpr = aexpr
+remove_asugar (Exp a1 exponent) = 
+        build_mult_n_times sugar_free_a1 exponent
+        where sugar_free_a1 = remove_asugar a1
+
+remove_asugar (Var v) = Var v
+remove_asugar (IntConst i) = IntConst i
+remove_asugar (Neg a1) = Neg (remove_asugar a1)
+remove_asugar (ABinary op a1 a2) = 
+    ABinary op (remove_asugar a1) (remove_asugar a2) 
+
+build_mult_n_times aexpr 0 = IntConst 1
+build_mult_n_times aexpr n = 
+    ABinary Multiply aexpr (build_mult_n_times aexpr (n-1))
+
 
 make_nand :: BExpr -> BExpr -> BExpr
 make_nand bexpr1 bexpr2 =

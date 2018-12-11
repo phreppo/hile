@@ -138,6 +138,10 @@ neq2 = build_test "x :=33; if x != 1 then y:=1 else y:=0"
     (state [])
     (state [("x",33), ("y",1)])   
 
+exp1 = build_test "x :=2; x:= x^2^2"
+    (state [])
+    (state [("x",16)])   
+
 tests = [
     assign1,
     assign2,
@@ -170,5 +174,6 @@ tests = [
     for3,
     fib1,
     neq1,
-    neq2
+    neq2,
+    exp1
     ]
