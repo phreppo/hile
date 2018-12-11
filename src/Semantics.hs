@@ -45,9 +45,6 @@ fix f =
     -- p.104
     \s -> lub [ apply_times f n bottom | n <- [0..] ] s
 
--- fix' f = \s -> [ apply_times f n bottom s | n <- [0..10] ] 
--- f = \g -> cond (eval_bexpr (Not (ArithmeticBinary IsEqual (Var "x") (IntConst 1))), g . semantics (Assign "x" (ABinary Subtract (Var "x") (IntConst 1))), partial_id )
-
 apply_times :: ((State -> Partial State) -> (State -> Partial State)) -> 
   Int -> (State -> Partial State) -> State -> Partial State
 apply_times f n = 

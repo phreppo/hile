@@ -2,7 +2,8 @@ module WhilePrograms
     (
         factorial,
         expon,
-        fibonacci
+        fibonacci,
+        empty_state
     )
 where
 
