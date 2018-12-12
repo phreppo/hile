@@ -27,7 +27,7 @@ state_lookup :: String -> State -> Integer
 -- would become impure, so the choice is between modify the type of the function
 -- and fill the initial state with random numbers
 
--- PRE: state contains one entry with the identifier "identifier"
-state_lookup identifier (S ((first_identifier,value):entries)) 
+-- PRE: state contains one entry for every possible identifier
+state_lookup identifier (S ((first_identifier,value):rest)) 
     | first_identifier == identifier = value
-    | otherwise                      = state_lookup identifier (state entries)
+    | otherwise                      = state_lookup identifier (state rest)

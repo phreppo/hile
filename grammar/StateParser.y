@@ -31,7 +31,7 @@ Vars  : var '->' Int          { state [($1,$3)] }
       | Vars ',' var '->' Int { update_entry ($3,$5) $1 }
 
 Int : int       { $1 }
-    | '-' int   { -$2} 
+    | '-' int   { -$2 } 
 
 {
 parseErrorState :: [TokenState] -> a
