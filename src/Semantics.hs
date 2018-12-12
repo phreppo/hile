@@ -2,7 +2,8 @@ module Semantics
     (   
         semantics,
         cond,
-        fix
+        fix,
+        apply_times
     )
 where
 
