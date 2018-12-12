@@ -11,7 +11,6 @@ import WhileGrammar
 %name while_parse
 %tokentype { Token }
 %error { parseError }
-%nonassoc '<=' '<' '>' '>='
 
 %left 'or'
 %left 'and'
@@ -22,7 +21,7 @@ import WhileGrammar
 %left NEG 'not'
 
 %left 'do' 'else' 
-%right ';'         -- ; is stronger than do and else
+%right ';'         -- ; is stronger than do and else, essential
 
 %token 
       int             { TokenInt $$ }
@@ -77,8 +76,8 @@ Stmt  : '(' Stmt ')'                                    { $2 }
       | 'repeat' Stmt 'until' BExpr                     { Repeat $2 $4 }
       | 'for' var ':=' AExpr 'to' AExpr 'do' Stmt       { For $2 $4 $6 $8 }
 
-AExpr : int                     { IntConst $1 }
-      | '(' AExpr ')'           { $2 }
+AExpr : '(' AExpr ')'           { $2 }
+      | int                     { IntConst $1 }
       | var                     { Var $1}
       | '-' AExpr %prec NEG     { Neg $2}
       | AExpr '+' AExpr         { ABinary Add $1 $3}
