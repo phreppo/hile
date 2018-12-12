@@ -26,8 +26,8 @@ instance Show State where
     show (S entries) = entries_to_string entries
 
 data Possibly a = Undef
-               | Defined a  
-               deriving (Show,Read,Eq)
+                | Defined a
+                deriving (Show,Read,Eq)
 
 bottom :: State -> Possibly State
 bottom = \s -> Undef
@@ -36,7 +36,7 @@ purify :: Possibly State -> State
 purify (Defined s) = s
 
 possibly_id :: State -> Possibly State
-possibly_id = Defined
+possibly_id = Defined . id
 
 state :: [Entry] -> State
 state entries = S entries

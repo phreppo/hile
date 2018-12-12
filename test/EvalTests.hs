@@ -180,3 +180,4 @@ tests = [
 
 -- fix' f = \s -> [ apply_times f n bottom s | n <- [0..10] ] 
 -- f = \g -> cond (eval_bexpr (Not (ArithmeticBinary IsEqual (Var "x") (IntConst 1))), g . semantics (Assign "x" (ABinary Subtract (Var "x") (IntConst 1))), possibly_id )
+-- https://wiki.haskell.org/Tail_recursion

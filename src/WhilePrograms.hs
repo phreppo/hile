@@ -9,9 +9,9 @@ module WhilePrograms
 where
 
 -- x!
-factorial = "y:=1; while not (x = 1) do y := y*x; x := x-1"
 -- https://coolconversion.com/math/factorial/_700_factorial%3F
 -- https://coolconversion.com/math/factorial/What-is-the-factorial-of_7000_%3F
+factorial = "y:=1; while not (x = 1) do y := y*x; x := x-1"
 
 --  x ^ y
 expon = "accumulator := 1; for i:=1 to y do accumulator:=accumulator*x"
