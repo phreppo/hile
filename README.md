@@ -9,10 +9,10 @@ stack ghci
 and then the function `i` to interpret one program in one given state. For example:
 
 ```
-i ("y:=1; while x != 1 do y:=y*x; x:=x-1","[x->10]")
+i ("y:=1; while x != 1 do y:=y*x; x:=x-1","[x->7000]")
 ```
 
-computes the factorial of 10. This is the grammar of the language: 
+computes the factorial of 7000. This is the grammar of the language: 
 
 ![alt text](grammar.png "Logo Title Text 1")
 
@@ -27,8 +27,9 @@ The syntax is enriched enriched with some syntactic sugar, always removed before
 | > |
 | >= |
 | != |
+| ^ |
 
-To build the executable you need [happy](https://www.haskell.org/happy/), one parser generator for Haskell. To build the executable run:
+To build the executable you need [happy](https://www.haskell.org/happy/) installed, one parser generator for Haskell. To build the executable run:
 
 ```
 ./generateGrammar
