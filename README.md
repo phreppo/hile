@@ -1,6 +1,6 @@
 # hile
 
-Interpreter written in Haskell for the While language described [here](http://www.daimi.au.dk/~bra8130/Wiley_book/wiley.pdf). It builds the semantic function of the code and then applies it to the given state. One may use the REPL function in the main or
+Interpreter written in Haskell for the While language described [here](http://www.cs.kun.nl/~hubbers/courses/sc_1718/materiaal/wiley.pdf). It builds the semantic function of the code and then applies it to the given state. One may use the REPL function in the main or
 
 ```
 stack ghci
