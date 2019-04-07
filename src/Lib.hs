@@ -67,7 +67,7 @@ get_random_integer = randomIO
 
 get_identifiers_in_stmt :: Stmt -> [String]
 get_identifiers_in_stmt stmt =
-    (remove_duplicates . get_identifiers_in_stmt_with_duplicate) stmt
+    (remove_duplicates . get_identifiers_in_stmt_with_duplicate) stmt 
 
 get_identifiers_in_stmt_with_duplicate :: Stmt -> [String]
 get_identifiers_in_stmt_with_duplicate (Seq s1 s2) =
