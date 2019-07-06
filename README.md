@@ -22,7 +22,7 @@ computes the factorial of 7000. The grammar of the language is:
 
 The syntax is enriched with some syntactic sugar, always removed before interpreting the program:
 
-| Sugar construct       |
+| Sugar constructs       |
 | :-------------: |
 | for       | 
 | repeat      | 
