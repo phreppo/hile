@@ -4,7 +4,7 @@ Interpreter written in Haskell for the While language described [here](http://ww
 
 ![alt text](kt-theorem.png "Logo Title Text 1")
 
-To use the interpreter one may exploit the REPL function in the main or
+To use the interpreter one may exploit the REPL function in the main or 
 
 ```
 stack ghci
