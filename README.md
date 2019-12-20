@@ -3,7 +3,7 @@
 Interpreter written in Haskell for the While language described [here](http://www.cs.kun.nl/~hubbers/courses/sc_1718/materiaal/wiley.pdf). It builds the semantic function of the code and then applies it to the given state. In particular the interpreter performs a fixpoint calculation using the [Knaster–Tarski theorem](https://en.wikipedia.org/wiki/Knaster%E2%80%93Tarski_theorem) for calculating the semantics of the while construct. For further information see [this](http://www.cs.kun.nl/~hubbers/courses/sc_1718/materiaal/wiley.pdf).
 
 ![alt text](kt-theorem.png "Logo Title Text 1")
-
+ 
 To use the interpreter one may exploit the REPL function in the main or 
 
 ```
